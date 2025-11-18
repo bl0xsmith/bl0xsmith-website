@@ -1,0 +1,153 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ThreeBackground from '../components/ThreeBackground.astro';
+import Navigation from '../components/Navigation.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+
+const allProjects = await getCollection('projects');
+const featuredProjects = allProjects.filter(p => p.data.featured);
+const otherProjects = allProjects.filter(p => !p.data.featured);
+---
+
+<BaseLayout
+  title="Projects - Darkness"
+  description="Portfolio of dark-themed web projects and experiments"
+>
+  <ThreeBackground />
+  <Navigation />
+
+  <main class="projects-page">
+    <div class="container">
+      <header class="projects-header">
+        <h1 class="page-title shimmer-text">Projects</h1>
+        <p class="page-subtitle">
+          A collection of dark-themed experiments and web projects
+        </p>
+      </header>
+
+      {featuredProjects.length > 0 && (
+        <section class="featured-section">
+          <h2 class="section-title">Featured Projects</h2>
+          <div class="projects-grid featured-grid">
+            {featuredProjects.map((project) => (
+              <ProjectCard
+                title={project.data.title}
+                description={project.data.description}
+                image={project.data.image}
+                link={project.data.link}
+                github={project.data.github}
+                tags={project.data.tags}
+                featured={true}
+              />
+            ))}
+          </div>
+        </section>
+      )}
+
+      {otherProjects.length > 0 && (
+        <section class="other-projects">
+          <h2 class="section-title">Other Projects</h2>
+          <div class="projects-grid">
+            {otherProjects.map((project) => (
+              <ProjectCard
+                title={project.data.title}
+                description={project.data.description}
+                image={project.data.image}
+                link={project.data.link}
+                github={project.data.github}
+                tags={project.data.tags}
+              />
+            ))}
+          </div>
+        </section>
+      )}
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  .projects-page {
+    min-height: 100vh;
+    padding: 8rem 2rem 5rem;
+  }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .projects-header {
+    text-align: center;
+    margin-bottom: 4rem;
+    animation: fadeInDown 1s ease-out;
+  }
+
+  .page-title {
+    font-size: clamp(3rem, 8vw, 5rem);
+    font-weight: 900;
+    margin-bottom: 1rem;
+  }
+
+  .page-subtitle {
+    font-size: 1.2rem;
+    color: var(--color-text-dim);
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .featured-section,
+  .other-projects {
+    margin-bottom: 4rem;
+  }
+
+  .section-title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+    background: linear-gradient(135deg, var(--color-accent-purple), var(--color-accent-pink));
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 2rem;
+    animation: fadeInUp 1s ease-out 0.2s backwards;
+  }
+
+  .featured-grid {
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  }
+
+  @keyframes fadeInDown {
+    from {
+      opacity: 0;
+      transform: translateY(-30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .projects-grid,
+    .featured-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

@@ -1,0 +1,109 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ThreeBackground from '../../components/ThreeBackground.astro';
+import Navigation from '../../components/Navigation.astro';
+import BlogCard from '../../components/BlogCard.astro';
+
+const allBlogPosts = await getCollection('blog');
+const sortedPosts = allBlogPosts.sort((a, b) =>
+  b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+---
+
+<BaseLayout
+  title="Blog - Darkness"
+  description="Articles about web development, Three.js, and dark design"
+>
+  <ThreeBackground />
+  <Navigation />
+
+  <main class="blog-page">
+    <div class="container">
+      <header class="blog-header">
+        <h1 class="page-title shimmer-text">Blog</h1>
+        <p class="page-subtitle">
+          Exploring the depths of web development, animations, and dark design
+        </p>
+      </header>
+
+      <div class="blog-grid">
+        {sortedPosts.map((post) => (
+          <BlogCard
+            title={post.data.title}
+            description={post.data.description}
+            pubDate={post.data.pubDate}
+            slug={post.slug}
+            tags={post.data.tags}
+          />
+        ))}
+      </div>
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  .blog-page {
+    min-height: 100vh;
+    padding: 8rem 2rem 5rem;
+  }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .blog-header {
+    text-align: center;
+    margin-bottom: 4rem;
+    animation: fadeInDown 1s ease-out;
+  }
+
+  .page-title {
+    font-size: clamp(3rem, 8vw, 5rem);
+    font-weight: 900;
+    margin-bottom: 1rem;
+  }
+
+  .page-subtitle {
+    font-size: 1.2rem;
+    color: var(--color-text-dim);
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .blog-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 2rem;
+    animation: fadeInUp 1s ease-out 0.2s backwards;
+  }
+
+  @keyframes fadeInDown {
+    from {
+      opacity: 0;
+      transform: translateY(-30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .blog-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

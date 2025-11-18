@@ -1,0 +1,185 @@
+---
+interface Props {
+  title: string;
+  description: string;
+  image?: string;
+  link?: string;
+  github?: string;
+  tags?: string[];
+  featured?: boolean;
+}
+
+const { title, description, image, link, github, tags, featured } = Astro.props;
+---
+
+<article class="project-card" class:list={{ featured }}>
+  <div class="project-card-content">
+    {featured && <span class="featured-badge">Featured</span>}
+    {image && (
+      <div class="project-image">
+        <img src={image} alt={title} />
+      </div>
+    )}
+    <h3 class="project-title">{title}</h3>
+    <p class="project-description">{description}</p>
+    {tags && tags.length > 0 && (
+      <div class="project-tags">
+        {tags.map((tag) => (
+          <span class="tag">{tag}</span>
+        ))}
+      </div>
+    )}
+    <div class="project-links">
+      {link && (
+        <a href={link} class="project-link" target="_blank" rel="noopener noreferrer">
+          View Project →
+        </a>
+      )}
+      {github && (
+        <a href={github} class="project-link github" target="_blank" rel="noopener noreferrer">
+          GitHub
+        </a>
+      )}
+    </div>
+  </div>
+  <div class="project-card-glow"></div>
+</article>
+
+<style>
+  .project-card {
+    position: relative;
+    background: var(--color-bg-card);
+    border: 1px solid rgba(168, 85, 247, 0.2);
+    border-radius: 1rem;
+    padding: 2rem;
+    transition: all 0.3s ease;
+    overflow: hidden;
+  }
+
+  .project-card.featured {
+    border-color: rgba(236, 72, 153, 0.4);
+  }
+
+  .project-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(168, 85, 247, 0.1), rgba(236, 72, 153, 0.1));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .project-card:hover::before {
+    opacity: 1;
+  }
+
+  .project-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(168, 85, 247, 0.3);
+    border-color: var(--color-accent-purple);
+  }
+
+  .project-card-content {
+    position: relative;
+    z-index: 1;
+  }
+
+  .featured-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    background: linear-gradient(135deg, var(--color-accent-purple), var(--color-accent-pink));
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: white;
+    margin-bottom: 1rem;
+  }
+
+  .project-image {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    margin-bottom: 1.5rem;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    background: var(--color-bg-darker);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .project-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .project-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    background: linear-gradient(135deg, var(--color-accent-purple), var(--color-accent-pink));
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .project-description {
+    color: var(--color-text-dim);
+    line-height: 1.6;
+    margin-bottom: 1rem;
+  }
+
+  .project-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .tag {
+    padding: 0.25rem 0.75rem;
+    background: rgba(168, 85, 247, 0.1);
+    border: 1px solid rgba(168, 85, 247, 0.3);
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    color: var(--color-accent-purple);
+  }
+
+  .project-links {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .project-link {
+    color: var(--color-accent-purple);
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border-bottom: 1px solid transparent;
+  }
+
+  .project-link:hover {
+    color: var(--color-accent-pink);
+    border-bottom-color: var(--color-accent-pink);
+  }
+
+  .project-card-glow {
+    position: absolute;
+    bottom: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(168, 85, 247, 0.2), transparent 70%);
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    pointer-events: none;
+  }
+
+  .project-card:hover .project-card-glow {
+    opacity: 1;
+  }
+</style>

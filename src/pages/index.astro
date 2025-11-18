@@ -1,9 +1,16 @@
 ---
+import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ThreeBackground from '../components/ThreeBackground.astro';
 import Navigation from '../components/Navigation.astro';
 import Hero from '../components/Hero.astro';
 import Features from '../components/Features.astro';
+import BlogCard from '../components/BlogCard.astro';
+
+const allBlogPosts = await getCollection('blog');
+const recentPosts = allBlogPosts
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .slice(0, 3);
 ---
 
 <BaseLayout title="Darkness - Dark Theme">
@@ -11,6 +18,27 @@ import Features from '../components/Features.astro';
   <Navigation />
   <Hero />
   <Features />
+
+  <section class="recent-posts">
+    <div class="container">
+      <h2 class="section-title shimmer-text">Recent Posts</h2>
+      <p class="section-subtitle">Latest articles from the blog</p>
+      <div class="posts-grid">
+        {recentPosts.map((post) => (
+          <BlogCard
+            title={post.data.title}
+            description={post.data.description}
+            pubDate={post.data.pubDate}
+            slug={post.slug}
+            tags={post.data.tags}
+          />
+        ))}
+      </div>
+      <div class="view-all">
+        <a href="/blog" class="btn btn-secondary">View All Posts →</a>
+      </div>
+    </div>
+  </section>
 
   <section class="cta">
     <div class="container">
@@ -22,6 +50,41 @@ import Features from '../components/Features.astro';
 </BaseLayout>
 
 <style>
+  .recent-posts {
+    padding: 5rem 2rem;
+    position: relative;
+  }
+
+  .recent-posts .container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .section-title {
+    font-size: clamp(2.5rem, 6vw, 4rem);
+    font-weight: 900;
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+
+  .section-subtitle {
+    text-align: center;
+    color: var(--color-text-dim);
+    font-size: 1.2rem;
+    margin-bottom: 3rem;
+  }
+
+  .posts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 2rem;
+    margin-bottom: 3rem;
+  }
+
+  .view-all {
+    text-align: center;
+  }
+
   .cta {
     padding: 8rem 2rem;
     text-align: center;
@@ -47,12 +110,14 @@ import Features from '../components/Features.astro';
   }
 
   .btn {
+    display: inline-block;
     padding: 1.2rem 3rem;
     font-size: 1.1rem;
     font-weight: 600;
     border: none;
     border-radius: 0.5rem;
     cursor: pointer;
+    text-decoration: none;
     transition: all 0.3s ease;
     position: relative;
     overflow: hidden;
@@ -67,5 +132,23 @@ import Features from '../components/Features.astro';
   .btn-primary:hover {
     transform: translateY(-3px) scale(1.05);
     box-shadow: 0 15px 40px rgba(168, 85, 247, 0.6);
+  }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--color-text);
+    border: 2px solid var(--color-accent-purple);
+  }
+
+  .btn-secondary:hover {
+    background: var(--color-accent-purple);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(168, 85, 247, 0.4);
+  }
+
+  @media (max-width: 768px) {
+    .posts-grid {
+      grid-template-columns: 1fr;
+    }
   }
 </style>
