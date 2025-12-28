@@ -1,11 +1,11 @@
 ---
-// Navigation component
+// Navigation component - Floating navbar with SVG icons
 const currentPath = Astro.url.pathname;
 ---
 
 <nav class="nav">
   <div class="nav-container">
-    <a href="/" class="logo shimmer-text">DARKNESS</a>
+    <a href="/" class="logo">DARKNESS</a>
 
     <div class="nav-links">
       <a href="/" class:list={['nav-link', { active: currentPath === '/' }]}>
@@ -22,28 +22,64 @@ const currentPath = Astro.url.pathname;
       </a>
     </div>
 
-    <button class="theme-toggle" aria-label="Toggle theme">
-      <span class="icon">✨</span>
+    <button class="theme-toggle" aria-label="Toggle theme" id="theme-toggle">
+      <!-- Sun icon (for dark mode - click to switch to light) -->
+      <svg class="icon icon-sun" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="5"></circle>
+        <line x1="12" y1="1" x2="12" y2="3"></line>
+        <line x1="12" y1="21" x2="12" y2="23"></line>
+        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+        <line x1="1" y1="12" x2="3" y2="12"></line>
+        <line x1="21" y1="12" x2="23" y2="12"></line>
+        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+      </svg>
+      <!-- Moon icon (for light mode - click to switch to dark) -->
+      <svg class="icon icon-moon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: none;">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+      </svg>
+    </button>
+
+    <!-- Mobile menu button -->
+    <button class="mobile-menu-btn" aria-label="Toggle menu" id="mobile-menu-btn">
+      <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="3" y1="12" x2="21" y2="12"></line>
+        <line x1="3" y1="6" x2="21" y2="6"></line>
+        <line x1="3" y1="18" x2="21" y2="18"></line>
+      </svg>
     </button>
   </div>
 </nav>
 
+<!-- Mobile menu overlay -->
+<div class="mobile-menu" id="mobile-menu">
+  <div class="mobile-menu-content">
+    <a href="/" class:list={['mobile-nav-link', { active: currentPath === '/' }]}>Home</a>
+    <a href="/blog" class:list={['mobile-nav-link', { active: currentPath.startsWith('/blog') }]}>Blog</a>
+    <a href="/projects" class:list={['mobile-nav-link', { active: currentPath === '/projects' }]}>Projects</a>
+    <a href="/about" class:list={['mobile-nav-link', { active: currentPath === '/about' }]}>About</a>
+  </div>
+</div>
+
 <style>
   .nav {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
+    top: 1rem;
+    left: 1rem;
+    right: 1rem;
     z-index: 1000;
-    padding: 1.5rem 2rem;
-    background: rgba(10, 10, 15, 0.8);
-    backdrop-filter: blur(10px);
-    border-bottom: 1px solid rgba(168, 85, 247, 0.2);
+    padding: 1rem 1.5rem;
+    background: rgba(15, 23, 42, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--color-border);
+    border-radius: 1rem;
     animation: slideDown 0.5s ease-out;
   }
 
   .nav-container {
-    max-width: 1400px;
+    max-width: 1200px;
     margin: 0 auto;
     display: flex;
     align-items: center;
@@ -51,16 +87,17 @@ const currentPath = Astro.url.pathname;
   }
 
   .logo {
-    font-size: 1.5rem;
-    font-weight: 900;
+    font-family: var(--font-heading);
+    font-size: 1.25rem;
+    font-weight: 700;
     text-decoration: none;
     letter-spacing: 0.05em;
-    transition: all 0.3s ease;
+    color: var(--color-text);
+    transition: color 0.2s ease;
   }
 
   .logo:hover {
-    transform: scale(1.05);
-    filter: drop-shadow(0 0 10px var(--color-accent-purple));
+    color: var(--color-primary);
   }
 
   .nav-links {
@@ -69,22 +106,28 @@ const currentPath = Astro.url.pathname;
   }
 
   .nav-link {
-    color: var(--color-text);
+    color: var(--color-text-dim);
     text-decoration: none;
     font-weight: 500;
+    font-size: 0.95rem;
     position: relative;
-    transition: all 0.3s ease;
+    transition: color 0.2s ease;
+    cursor: pointer;
   }
 
   .nav-link::after {
     content: '';
     position: absolute;
-    bottom: -5px;
+    bottom: -4px;
     left: 0;
     width: 0;
     height: 2px;
-    background: linear-gradient(90deg, var(--color-accent-purple), var(--color-accent-pink));
-    transition: width 0.3s ease;
+    background: var(--color-primary);
+    transition: width 0.2s ease;
+  }
+
+  .nav-link:hover {
+    color: var(--color-text);
   }
 
   .nav-link:hover::after,
@@ -93,30 +136,82 @@ const currentPath = Astro.url.pathname;
   }
 
   .nav-link.active {
-    color: var(--color-accent-purple);
+    color: var(--color-primary);
   }
 
   .theme-toggle {
-    background: rgba(168, 85, 247, 0.2);
-    border: 1px solid var(--color-accent-purple);
-    border-radius: 50%;
-    width: 45px;
-    height: 45px;
+    background: rgba(59, 130, 246, 0.1);
+    border: 1px solid var(--color-border);
+    border-radius: 0.5rem;
+    width: 40px;
+    height: 40px;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
+    color: var(--color-text);
   }
 
   .theme-toggle:hover {
-    background: rgba(168, 85, 247, 0.4);
-    transform: rotate(180deg);
-    box-shadow: 0 0 20px rgba(168, 85, 247, 0.5);
+    background: rgba(59, 130, 246, 0.2);
+    border-color: var(--color-primary);
   }
 
   .icon {
-    font-size: 1.3rem;
+    width: 20px;
+    height: 20px;
+  }
+
+  .mobile-menu-btn {
+    display: none;
+    background: transparent;
+    border: none;
+    color: var(--color-text);
+    cursor: pointer;
+    padding: 0.5rem;
+  }
+
+  .mobile-menu {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(15, 23, 42, 0.98);
+    z-index: 999;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+
+  .mobile-menu.open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .mobile-menu-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    gap: 2rem;
+  }
+
+  .mobile-nav-link {
+    font-family: var(--font-heading);
+    font-size: 2rem;
+    font-weight: 600;
+    color: var(--color-text-dim);
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .mobile-nav-link:hover,
+  .mobile-nav-link.active {
+    color: var(--color-primary);
   }
 
   @keyframes slideDown {
@@ -131,71 +226,65 @@ const currentPath = Astro.url.pathname;
   }
 
   @media (max-width: 768px) {
-    .nav-links {
-      gap: 1rem;
+    .nav {
+      top: 0.75rem;
+      left: 0.75rem;
+      right: 0.75rem;
+      padding: 0.875rem 1rem;
     }
 
-    .logo {
-      font-size: 1.2rem;
+    .nav-links {
+      display: none;
+    }
+
+    .theme-toggle {
+      display: none;
+    }
+
+    .mobile-menu-btn {
+      display: flex;
+    }
+
+    .mobile-menu {
+      display: block;
     }
   }
 </style>
 
 <script>
-  // Theme toggle animation
-  const themeToggle = document.querySelector('.theme-toggle');
+  // Theme toggle
+  const themeToggle = document.getElementById('theme-toggle');
+  const sunIcon = document.querySelector('.icon-sun') as HTMLElement;
+  const moonIcon = document.querySelector('.icon-moon') as HTMLElement;
 
-  if (themeToggle) {
+  if (themeToggle && sunIcon && moonIcon) {
     themeToggle.addEventListener('click', () => {
-      const icon = themeToggle.querySelector('.icon');
-      if (icon) {
-        icon.textContent = icon.textContent === '✨' ? '🌙' : '✨';
+      // Toggle icons
+      if (sunIcon.style.display === 'none') {
+        sunIcon.style.display = 'block';
+        moonIcon.style.display = 'none';
+      } else {
+        sunIcon.style.display = 'none';
+        moonIcon.style.display = 'block';
       }
+    });
+  }
 
-      // Particle burst effect
-      for (let i = 0; i < 10; i++) {
-        const particle = document.createElement('div');
-        particle.style.position = 'fixed';
-        particle.style.width = '5px';
-        particle.style.height = '5px';
-        particle.style.background = '#a855f7';
-        particle.style.borderRadius = '50%';
-        particle.style.pointerEvents = 'none';
-        particle.style.zIndex = '10000';
+  // Mobile menu toggle
+  const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+  const mobileMenu = document.getElementById('mobile-menu');
 
-        const rect = themeToggle.getBoundingClientRect();
-        particle.style.left = rect.left + rect.width / 2 + 'px';
-        particle.style.top = rect.top + rect.height / 2 + 'px';
+  if (mobileMenuBtn && mobileMenu) {
+    mobileMenuBtn.addEventListener('click', () => {
+      mobileMenu.classList.toggle('open');
+    });
 
-        document.body.appendChild(particle);
-
-        const angle = (Math.PI * 2 * i) / 10;
-        const velocity = 100;
-        const vx = Math.cos(angle) * velocity;
-        const vy = Math.sin(angle) * velocity;
-
-        let opacity = 1;
-        let x = rect.left + rect.width / 2;
-        let y = rect.top + rect.height / 2;
-
-        const animate = () => {
-          x += vx * 0.05;
-          y += vy * 0.05;
-          opacity -= 0.02;
-
-          particle.style.left = x + 'px';
-          particle.style.top = y + 'px';
-          particle.style.opacity = opacity.toString();
-
-          if (opacity > 0) {
-            requestAnimationFrame(animate);
-          } else {
-            particle.remove();
-          }
-        };
-
-        animate();
-      }
+    // Close menu when clicking a link
+    const mobileLinks = mobileMenu.querySelectorAll('.mobile-nav-link');
+    mobileLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        mobileMenu.classList.remove('open');
+      });
     });
   }
 </script>

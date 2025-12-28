@@ -20,7 +20,7 @@ const otherProjects = allProjects.filter(p => !p.data.featured);
   <main class="projects-page">
     <div class="container">
       <header class="projects-header">
-        <h1 class="page-title shimmer-text">Projects</h1>
+        <h1 class="page-title">Projects</h1>
         <p class="page-subtitle">
           A collection of dark-themed experiments and web projects
         </p>
@@ -69,7 +69,7 @@ const otherProjects = allProjects.filter(p => !p.data.featured);
 <style>
   .projects-page {
     min-height: 100vh;
-    padding: 8rem 2rem 5rem;
+    padding: calc(var(--nav-height) + 2rem) 2rem 5rem;
   }
 
   .container {
@@ -79,20 +79,21 @@ const otherProjects = allProjects.filter(p => !p.data.featured);
 
   .projects-header {
     text-align: center;
-    margin-bottom: 4rem;
-    animation: fadeInDown 1s ease-out;
+    margin-bottom: 3rem;
   }
 
   .page-title {
-    font-size: clamp(3rem, 8vw, 5rem);
-    font-weight: 900;
-    margin-bottom: 1rem;
+    font-family: var(--font-heading);
+    font-size: clamp(2.5rem, 8vw, 4rem);
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    color: var(--color-text);
   }
 
   .page-subtitle {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     color: var(--color-text-dim);
-    max-width: 600px;
+    max-width: 500px;
     margin: 0 auto;
   }
 
@@ -102,49 +103,28 @@ const otherProjects = allProjects.filter(p => !p.data.featured);
   }
 
   .section-title {
-    font-size: 2rem;
-    font-weight: 700;
-    margin-bottom: 2rem;
-    background: linear-gradient(135deg, var(--color-accent-purple), var(--color-accent-pink));
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    color: var(--color-primary);
   }
 
   .projects-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-    gap: 2rem;
-    animation: fadeInUp 1s ease-out 0.2s backwards;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.5rem;
   }
 
   .featured-grid {
-    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
-  }
-
-  @keyframes fadeInDown {
-    from {
-      opacity: 0;
-      transform: translateY(-30px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  @keyframes fadeInUp {
-    from {
-      opacity: 0;
-      transform: translateY(30px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
   }
 
   @media (max-width: 768px) {
+    .projects-page {
+      padding-top: calc(var(--nav-height) + 1rem);
+    }
+
     .projects-grid,
     .featured-grid {
       grid-template-columns: 1fr;

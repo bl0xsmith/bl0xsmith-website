@@ -1,14 +1,25 @@
 /* Global styles for dark abyss theme */
 :root {
-  --color-bg-dark: #0a0a0f;
-  --color-bg-darker: #050508;
-  --color-bg-card: #151520;
-  --color-accent-purple: #a855f7;
-  --color-accent-pink: #ec4899;
-  --color-accent-blue: #3b82f6;
-  --color-text: #e4e4e7;
-  --color-text-dim: #a1a1aa;
-  --color-shadow: rgba(168, 85, 247, 0.3);
+  /* Color Palette - Developer Dark Theme */
+  --color-bg-dark: #0F172A;
+  --color-bg-darker: #020617;
+  --color-bg-card: #1E293B;
+  --color-primary: #3B82F6;
+  --color-accent-purple: #8B5CF6;
+  --color-accent-pink: #EC4899;
+  --color-accent-blue: #3B82F6;
+  --color-accent-cyan: #06B6D4;
+  --color-text: #F1F5F9;
+  --color-text-dim: #94A3B8;
+  --color-border: #334155;
+  --color-shadow: rgba(59, 130, 246, 0.3);
+
+  /* Typography */
+  --font-heading: 'Space Grotesk', system-ui, sans-serif;
+  --font-body: 'DM Sans', system-ui, sans-serif;
+
+  /* Spacing */
+  --nav-height: 80px;
 }
 
 * {
@@ -18,10 +29,16 @@
 }
 
 html {
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  font-family: var(--font-body);
   background: var(--color-bg-dark);
   color: var(--color-text);
   overflow-x: hidden;
+  scroll-behavior: smooth;
+}
+
+/* Headings use Space Grotesk */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
 }
 
 body {

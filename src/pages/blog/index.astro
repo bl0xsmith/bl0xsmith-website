@@ -21,7 +21,7 @@ const sortedPosts = allBlogPosts.sort((a, b) =>
   <main class="blog-page">
     <div class="container">
       <header class="blog-header">
-        <h1 class="page-title shimmer-text">Blog</h1>
+        <h1 class="page-title">Blog</h1>
         <p class="page-subtitle">
           Exploring the depths of web development, animations, and dark design
         </p>
@@ -45,7 +45,7 @@ const sortedPosts = allBlogPosts.sort((a, b) =>
 <style>
   .blog-page {
     min-height: 100vh;
-    padding: 8rem 2rem 5rem;
+    padding: calc(var(--nav-height) + 2rem) 2rem 5rem;
   }
 
   .container {
@@ -55,53 +55,35 @@ const sortedPosts = allBlogPosts.sort((a, b) =>
 
   .blog-header {
     text-align: center;
-    margin-bottom: 4rem;
-    animation: fadeInDown 1s ease-out;
+    margin-bottom: 3rem;
   }
 
   .page-title {
-    font-size: clamp(3rem, 8vw, 5rem);
-    font-weight: 900;
-    margin-bottom: 1rem;
+    font-family: var(--font-heading);
+    font-size: clamp(2.5rem, 8vw, 4rem);
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    color: var(--color-text);
   }
 
   .page-subtitle {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     color: var(--color-text-dim);
-    max-width: 600px;
+    max-width: 500px;
     margin: 0 auto;
   }
 
   .blog-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-    gap: 2rem;
-    animation: fadeInUp 1s ease-out 0.2s backwards;
-  }
-
-  @keyframes fadeInDown {
-    from {
-      opacity: 0;
-      transform: translateY(-30px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  @keyframes fadeInUp {
-    from {
-      opacity: 0;
-      transform: translateY(30px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.5rem;
   }
 
   @media (max-width: 768px) {
+    .blog-page {
+      padding-top: calc(var(--nav-height) + 1rem);
+    }
+
     .blog-grid {
       grid-template-columns: 1fr;
     }

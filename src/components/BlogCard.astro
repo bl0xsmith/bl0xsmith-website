@@ -11,7 +11,7 @@ const { title, description, pubDate, slug, tags } = Astro.props;
 
 const formattedDate = pubDate.toLocaleDateString('en-US', {
   year: 'numeric',
-  month: 'long',
+  month: 'short',
   day: 'numeric',
 });
 ---
@@ -19,7 +19,15 @@ const formattedDate = pubDate.toLocaleDateString('en-US', {
 <article class="blog-card">
   <a href={`/blog/${slug}`} class="blog-card-link">
     <div class="blog-card-content">
-      <time class="blog-date">{formattedDate}</time>
+      <time class="blog-date">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="16" y1="2" x2="16" y2="6"></line>
+          <line x1="8" y1="2" x2="8" y2="6"></line>
+          <line x1="3" y1="10" x2="21" y2="10"></line>
+        </svg>
+        {formattedDate}
+      </time>
       <h3 class="blog-title">{title}</h3>
       <p class="blog-description">{description}</p>
       {tags && tags.length > 0 && (
@@ -29,8 +37,14 @@ const formattedDate = pubDate.toLocaleDateString('en-US', {
           ))}
         </div>
       )}
+      <span class="read-more">
+        Read article
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+          <polyline points="12 5 19 12 12 19"></polyline>
+        </svg>
+      </span>
     </div>
-    <div class="blog-card-glow"></div>
   </a>
 </article>
 
@@ -41,98 +55,95 @@ const formattedDate = pubDate.toLocaleDateString('en-US', {
   }
 
   .blog-card-link {
-    display: block;
+    display: flex;
+    flex-direction: column;
     height: 100%;
     background: var(--color-bg-card);
-    border: 1px solid rgba(168, 85, 247, 0.2);
+    border: 1px solid var(--color-border);
     border-radius: 1rem;
-    padding: 2rem;
+    padding: 1.5rem;
     text-decoration: none;
     color: var(--color-text);
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .blog-card-link::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(135deg, rgba(168, 85, 247, 0.1), rgba(236, 72, 153, 0.1));
-    opacity: 0;
-    transition: opacity 0.3s ease;
-  }
-
-  .blog-card-link:hover::before {
-    opacity: 1;
+    transition: all 0.2s ease;
+    cursor: pointer;
   }
 
   .blog-card-link:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 20px 40px rgba(168, 85, 247, 0.3);
-    border-color: var(--color-accent-purple);
+    border-color: var(--color-primary);
+    box-shadow: 0 8px 30px rgba(59, 130, 246, 0.15);
   }
 
   .blog-card-content {
-    position: relative;
-    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
   }
 
   .blog-date {
-    display: block;
-    font-size: 0.875rem;
-    color: var(--color-accent-purple);
-    margin-bottom: 0.5rem;
-    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+    color: var(--color-text-dim);
+    margin-bottom: 0.75rem;
+  }
+
+  .blog-date svg {
+    opacity: 0.7;
   }
 
   .blog-title {
-    font-size: 1.5rem;
-    font-weight: 700;
-    margin-bottom: 0.75rem;
-    background: linear-gradient(135deg, var(--color-accent-purple), var(--color-accent-pink));
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    font-family: var(--font-heading);
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--color-text);
+    transition: color 0.2s ease;
+  }
+
+  .blog-card-link:hover .blog-title {
+    color: var(--color-primary);
   }
 
   .blog-description {
     color: var(--color-text-dim);
     line-height: 1.6;
+    font-size: 0.9rem;
     margin-bottom: 1rem;
+    flex-grow: 1;
   }
 
   .blog-tags {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
+    margin-bottom: 1rem;
   }
 
   .tag {
-    padding: 0.25rem 0.75rem;
-    background: rgba(168, 85, 247, 0.1);
-    border: 1px solid rgba(168, 85, 247, 0.3);
+    padding: 0.25rem 0.625rem;
+    background: rgba(59, 130, 246, 0.1);
+    border: 1px solid var(--color-border);
     border-radius: 0.25rem;
     font-size: 0.75rem;
-    color: var(--color-accent-purple);
+    color: var(--color-text-dim);
   }
 
-  .blog-card-glow {
-    position: absolute;
-    bottom: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: radial-gradient(circle, rgba(168, 85, 247, 0.2), transparent 70%);
-    opacity: 0;
-    transition: opacity 0.5s ease;
-    pointer-events: none;
+  .read-more {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-primary);
+    margin-top: auto;
   }
 
-  .blog-card-link:hover .blog-card-glow {
-    opacity: 1;
+  .read-more svg {
+    transition: transform 0.2s ease;
+  }
+
+  .blog-card-link:hover .read-more svg {
+    transform: translateX(4px);
   }
 </style>
