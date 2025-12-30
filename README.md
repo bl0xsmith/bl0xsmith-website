@@ -2,7 +2,7 @@
 
 A dark-themed Astro portfolio/blog template with Three.js particles and modern animations.
 
-[![Astro](https://img.shields.io/badge/Astro-4.0-purple)](https://astro.build/)
+[![Astro](https://img.shields.io/badge/Astro-5.0-purple)](https://astro.build/)
 [![Three.js](https://img.shields.io/badge/Three.js-0.160-blue)](https://threejs.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
