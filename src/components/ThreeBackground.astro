@@ -11,9 +11,9 @@
   let scene: THREE.Scene | null = null;
   let camera: THREE.PerspectiveCamera | null = null;
   let renderer: THREE.WebGLRenderer | null = null;
-  let particlesMesh: THREE.Points | null = null;
-  let torus: THREE.Mesh | null = null;
-  let torus2: THREE.Mesh | null = null;
+  let particlesMesh: THREE.Points<THREE.BufferGeometry, THREE.PointsMaterial> | null = null;
+  let torus: THREE.Mesh<THREE.TorusGeometry, THREE.MeshBasicMaterial> | null = null;
+  let torus2: THREE.Mesh<THREE.TorusGeometry, THREE.MeshBasicMaterial> | null = null;
   let animationId: number | null = null;
   let mouseX = 0;
   let mouseY = 0;
@@ -172,19 +172,19 @@
     // Three.jsオブジェクトのクリーンアップ
     if (particlesMesh) {
       particlesMesh.geometry.dispose();
-      (particlesMesh.material as THREE.Material).dispose();
+      particlesMesh.material.dispose();
       particlesMesh = null;
     }
 
     if (torus) {
       torus.geometry.dispose();
-      (torus.material as THREE.Material).dispose();
+      torus.material.dispose();
       torus = null;
     }
 
     if (torus2) {
       torus2.geometry.dispose();
-      (torus2.material as THREE.Material).dispose();
+      torus2.material.dispose();
       torus2 = null;
     }
 
