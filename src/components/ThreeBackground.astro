@@ -7,25 +7,179 @@
 <script>
   import * as THREE from 'three';
 
-  // Three.js アニメーションの初期化と管理
   let scene: THREE.Scene | null = null;
   let camera: THREE.PerspectiveCamera | null = null;
   let renderer: THREE.WebGLRenderer | null = null;
   let particlesMesh: THREE.Points<THREE.BufferGeometry, THREE.PointsMaterial> | null = null;
-  let torus: THREE.Mesh<THREE.TorusGeometry, THREE.MeshBasicMaterial> | null = null;
-  let torus2: THREE.Mesh<THREE.TorusGeometry, THREE.MeshBasicMaterial> | null = null;
   let animationId: number | null = null;
   let mouseX = 0;
   let mouseY = 0;
   let time = 0;
 
-  // マウスムーブハンドラー
+  type Planet = {
+    group: THREE.Group;
+    spheres: THREE.Mesh[];
+    grids: THREE.Mesh[];
+    lineMat: THREE.LineBasicMaterial;
+    soul: THREE.Mesh;           // fiery center node
+    soulGlows: THREE.Mesh[];    // layered corona around the soul
+    origin: [number, number, number];
+    rotSpeed: number;
+    driftFreq: number;
+    driftPhase: number;
+  };
+  let planets: Planet[] = [];
+
+  // Planet configs — S = outer cube side length
+  // Positions push planets to screen edges and further back in z so they frame content
+  const CONFIGS = [
+    { S: 11,  pos: [-30,  16,  -20] as [number,number,number], rot: 0.00050, df: 0.28, dp: 0.0 },
+    { S: 8,   pos: [ 32,  -8,  -22] as [number,number,number], rot: 0.00080, df: 0.40, dp: 1.6 },
+    { S: 9,   pos: [-24, -22,  -28] as [number,number,number], rot: 0.00060, df: 0.22, dp: 3.1 },
+    { S: 6,   pos: [ 22,  26,  -18] as [number,number,number], rot: 0.00100, df: 0.50, dp: 0.9 },
+    { S: 5,   pos: [  8, -30,  -14] as [number,number,number], rot: 0.00045, df: 0.18, dp: 2.3 },
+  ];
+
+  function buildPlanet(cfg: typeof CONFIGS[0]): Planet {
+    const { S } = cfg;
+    const h = S / 2;
+    const group = new THREE.Group();
+    const spheres: THREE.Mesh[] = [];
+    const grids: THREE.Mesh[] = [];
+
+    // 25 nodes: 1 center + 3 concentric cube shells (h/3, 2h/3, h)
+    const nodes: THREE.Vector3[] = [new THREE.Vector3(0, 0, 0)];
+    for (const d of [h / 3, (2 * h) / 3, h])
+      for (const sx of [-1, 1])
+        for (const sy of [-1, 1])
+          for (const sz of [-1, 1])
+            nodes.push(new THREE.Vector3(sx * d, sy * d, sz * d));
+
+    // Sacred gold lines — all 300 pairs
+    const lineVerts: number[] = [];
+    for (let i = 0; i < nodes.length; i++)
+      for (let j = i + 1; j < nodes.length; j++) {
+        lineVerts.push(nodes[i]!.x, nodes[i]!.y, nodes[i]!.z);
+        lineVerts.push(nodes[j]!.x, nodes[j]!.y, nodes[j]!.z);
+      }
+    const lineGeo = new THREE.BufferGeometry();
+    lineGeo.setAttribute('position', new THREE.Float32BufferAttribute(lineVerts, 3));
+    const lineMat = new THREE.LineBasicMaterial({
+      color: 0xd4a843,
+      transparent: true,
+      opacity: 0.22,
+      blending: THREE.AdditiveBlending,
+    });
+    group.add(new THREE.LineSegments(lineGeo, lineMat));
+
+    // Each node: a nodeGroup so the grid shell rotates around its own sphere center
+    let soul!: THREE.Mesh;
+    const soulGlows: THREE.Mesh[] = [];
+
+    nodes.forEach((pos, i) => {
+      const isCenter = i === 0;
+      const shell = isCenter ? 0 : Math.floor((i - 1) / 8) + 1;
+      const sphereR = ([S * 0.10, S * 0.075, S * 0.062, S * 0.052][shell]) ?? S * 0.052;
+
+      const nodeGroup = new THREE.Group();
+      nodeGroup.position.copy(pos);
+
+      if (isCenter) {
+        // ── Soul: white-hot stellar core with deep violet corona ──
+        // Inner white-hot nucleus — simulates the stellar core point
+        const nucleus = new THREE.Mesh(
+          new THREE.SphereGeometry(sphereR * 0.38, 16, 16),
+          new THREE.MeshBasicMaterial({ color: 0xffffff, blending: THREE.AdditiveBlending, depthWrite: false })
+        );
+        nodeGroup.add(nucleus);
+
+        const sphere = new THREE.Mesh(
+          new THREE.SphereGeometry(sphereR, 32, 32),
+          new THREE.MeshStandardMaterial({
+            color: 0x1a0030,
+            emissive: 0xf0ddff,   // near-white violet — maximum brightness
+            emissiveIntensity: 4.5,
+            roughness: 0.0,
+            metalness: 0.0,
+          })
+        );
+        nodeGroup.add(sphere);
+        spheres.push(sphere);
+        soul = sphere;
+
+        // 5-layer additive corona — fakes bloom, goes from bright inner to vast diffuse halo
+        const coronas = [
+          { r: sphereR * 1.4, color: 0xffffff, opacity: 0.30 }, // bright inner halo
+          { r: sphereR * 2.2, color: 0xcc77ff, opacity: 0.20 }, // violet aureole
+          { r: sphereR * 3.8, color: 0x9922ee, opacity: 0.12 }, // deep violet
+          { r: sphereR * 6.5, color: 0x6600bb, opacity: 0.07 }, // wide indigo wash
+          { r: sphereR * 11.0, color: 0x330055, opacity: 0.03 }, // vast outer aura
+        ];
+        for (const c of coronas) {
+          const glow = new THREE.Mesh(
+            new THREE.SphereGeometry(c.r, 16, 16),
+            new THREE.MeshBasicMaterial({
+              color: c.color,
+              transparent: true,
+              opacity: c.opacity,
+              blending: THREE.AdditiveBlending,
+              depthWrite: false,
+            })
+          );
+          nodeGroup.add(glow);
+          soulGlows.push(glow);
+        }
+
+        // Two point lights: tight bright core + wide ambient soul radiance
+        const soulLightCore = new THREE.PointLight(0xffeeff, 18, S * 3.5);
+        nodeGroup.add(soulLightCore);
+        const soulLightAura = new THREE.PointLight(0x9922ff, 8, S * 7.0);
+        nodeGroup.add(soulLightAura);
+
+        // Bright violet geodesic grid
+        const grid = new THREE.Mesh(
+          new THREE.IcosahedronGeometry(sphereR * 1.3, 1),
+          new THREE.MeshBasicMaterial({ color: 0xee88ff, wireframe: true, transparent: true, opacity: 0.80 })
+        );
+        nodeGroup.add(grid);
+        grids.push(grid);
+      } else {
+        // ── Outer nodes: dark metallic spheres with violet/indigo grid ──
+        const sphere = new THREE.Mesh(
+          new THREE.SphereGeometry(sphereR, 16, 16),
+          new THREE.MeshStandardMaterial({
+            color: 0x060620,
+            emissive: 0x08041e,
+            roughness: 0.30,
+            metalness: 0.80,
+          })
+        );
+        nodeGroup.add(sphere);
+        spheres.push(sphere);
+
+        const gridColor = shell === 1 ? 0x8b3dff : 0x4433aa;
+        const gridOpacity = shell === 1 ? 0.45 : 0.30;
+        const grid = new THREE.Mesh(
+          new THREE.IcosahedronGeometry(sphereR * 1.28, 1),
+          new THREE.MeshBasicMaterial({ color: gridColor, wireframe: true, transparent: true, opacity: gridOpacity })
+        );
+        nodeGroup.add(grid);
+        grids.push(grid);
+      }
+
+      group.add(nodeGroup);
+    });
+
+    group.position.set(...cfg.pos);
+    return { group, spheres, grids, lineMat, soul, soulGlows,
+      origin: cfg.pos, rotSpeed: cfg.rot, driftFreq: cfg.df, driftPhase: cfg.dp };
+  }
+
   const handleMouseMove = (event: MouseEvent) => {
     mouseX = (event.clientX / window.innerWidth) * 2 - 1;
     mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
   };
 
-  // リサイズハンドラー
   const handleResize = () => {
     if (!camera || !renderer) return;
     camera.aspect = window.innerWidth / window.innerHeight;
@@ -33,180 +187,167 @@
     renderer.setSize(window.innerWidth, window.innerHeight);
   };
 
-  // Three.jsアニメーションの初期化
   function initThreeAnimation() {
     const canvas = document.getElementById('three-canvas') as HTMLCanvasElement;
     if (!canvas) return;
-
-    // 既存のアニメーションをクリーンアップ
     cleanupThreeAnimation();
 
-    // シーン、カメラ、レンダラーの設定
     scene = new THREE.Scene();
     camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
-
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(window.devicePixelRatio);
-    camera.position.z = 5;
+    camera.position.z = 30;
 
-    // パーティクルシステムの作成
+    // Scene lighting — gives MeshStandardMaterial spheres real depth and shading
+    scene.add(new THREE.AmbientLight(0x111133, 1.2));
+    const light1 = new THREE.PointLight(0x8b3dff, 6, 120); // galaxy violet
+    light1.position.set(20, 25, 15);
+    scene.add(light1);
+    const light2 = new THREE.PointLight(0xd4a843, 4, 120); // sacred gold
+    light2.position.set(-25, -15, 10);
+    scene.add(light2);
+    const light3 = new THREE.PointLight(0x6d6aff, 3, 80);  // cosmic indigo fill
+    light3.position.set(0, -20, -10);
+    scene.add(light3);
+
+    // Particle star field
     const particlesGeometry = new THREE.BufferGeometry();
     const particlesCount = 5000;
     const posArray = new Float32Array(particlesCount * 3);
     const colorArray = new Float32Array(particlesCount * 3);
-
     for (let i = 0; i < particlesCount * 3; i += 3) {
-      // ランダムな位置
-      posArray[i] = (Math.random() - 0.5) * 100;
-      posArray[i + 1] = (Math.random() - 0.5) * 100;
-      posArray[i + 2] = (Math.random() - 0.5) * 100;
-
-      // Particle colors: galaxy violet / sacred gold / cosmic indigo
-      // Mirror these in global.css --color-accent-purple / --color-accent-pink / --color-primary
-      const colorType = Math.random();
-      if (colorType < 0.33) {
-        // galaxy violet #8B3DFF
-        colorArray[i] = 0.545;
-        colorArray[i + 1] = 0.239;
-        colorArray[i + 2] = 1.0;
-      } else if (colorType < 0.66) {
-        // sacred gold #D4A843
-        colorArray[i] = 0.831;
-        colorArray[i + 1] = 0.659;
-        colorArray[i + 2] = 0.263;
+      posArray[i]     = (Math.random() - 0.5) * 120;
+      posArray[i + 1] = (Math.random() - 0.5) * 120;
+      posArray[i + 2] = (Math.random() - 0.5) * 120;
+      const t = Math.random();
+      if (t < 0.33) {
+        colorArray[i] = 0.545; colorArray[i+1] = 0.239; colorArray[i+2] = 1.0;
+      } else if (t < 0.66) {
+        colorArray[i] = 0.831; colorArray[i+1] = 0.659; colorArray[i+2] = 0.263;
       } else {
-        // cosmic indigo #6D6AFF
-        colorArray[i] = 0.427;
-        colorArray[i + 1] = 0.416;
-        colorArray[i + 2] = 1.0;
+        colorArray[i] = 0.427; colorArray[i+1] = 0.416; colorArray[i+2] = 1.0;
       }
     }
-
     particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
     particlesGeometry.setAttribute('color', new THREE.BufferAttribute(colorArray, 3));
-
-    // パーティクル用マテリアル
-    const particlesMaterial = new THREE.PointsMaterial({
+    particlesMesh = new THREE.Points(particlesGeometry, new THREE.PointsMaterial({
       size: 0.15,
       vertexColors: true,
       transparent: true,
       opacity: 0.8,
       blending: THREE.AdditiveBlending,
-    });
-
-    particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+    }));
     scene.add(particlesMesh);
 
-    // 回転するトーラス（ドーナツ型）の追加
-    const torusGeometry = new THREE.TorusGeometry(10, 3, 16, 100);
-    const torusMaterial = new THREE.MeshBasicMaterial({
-      color: 0x8b3dff, // galaxy violet — mirrors --color-accent-purple in global.css
-      wireframe: true,
-      transparent: true,
-      opacity: 0.3,
+    // Spawn all Metatron's Cube planets
+    planets = CONFIGS.map(cfg => {
+      const planet = buildPlanet(cfg);
+      scene!.add(planet.group);
+      return planet;
     });
-    torus = new THREE.Mesh(torusGeometry, torusMaterial);
-    scene.add(torus);
 
-    // 2つ目のトーラス
-    const torus2Geometry = new THREE.TorusGeometry(15, 2, 16, 100);
-    const torus2Material = new THREE.MeshBasicMaterial({
-      color: 0xd4a843, // sacred gold — mirrors --color-accent-pink in global.css
-      wireframe: true,
-      transparent: true,
-      opacity: 0.2,
-    });
-    torus2 = new THREE.Mesh(torus2Geometry, torus2Material);
-    torus2.rotation.x = Math.PI / 4;
-    scene.add(torus2);
-
-    // イベントリスナーの追加
     document.addEventListener('mousemove', handleMouseMove);
     window.addEventListener('resize', handleResize);
-
-    // アニメーションループの開始
     time = 0;
     animate();
   }
 
-  // アニメーションループ
   function animate() {
-    if (!scene || !camera || !renderer || !particlesMesh || !torus || !torus2) return;
+    if (!scene || !camera || !renderer || !particlesMesh || planets.length === 0) return;
 
     animationId = requestAnimationFrame(animate);
     time += 0.001;
 
-    // パーティクルの回転とうねり
-    particlesMesh.rotation.y = time * 0.3;
-    particlesMesh.rotation.x = Math.sin(time) * 0.1;
+    // Slow particle drift
+    particlesMesh.rotation.y = time * 0.05;
+    particlesMesh.rotation.x = Math.sin(time * 0.3) * 0.04;
 
-    // トーラスの回転
-    torus.rotation.x += 0.01;
-    torus.rotation.y += 0.005;
-    torus.rotation.z += 0.003;
+    // Gold lines breathe slowly
+    const breathLine = 0.15 + Math.sin(time * 0.8) * 0.08;
 
-    torus2.rotation.x += 0.005;
-    torus2.rotation.y += 0.01;
-    torus2.rotation.z += 0.002;
+    planets.forEach(p => {
+      p.lineMat.opacity = breathLine;
 
-    // マウス追従
-    camera.position.x = mouseX * 2;
-    camera.position.y = mouseY * 2;
+      // Whole planet slowly drifts and rotates through space
+      p.group.rotation.y += p.rotSpeed * 0.6;
+      p.group.rotation.x += p.rotSpeed * 0.25;
+      p.group.rotation.z += p.rotSpeed * 0.10;
+
+      // Each geodesic grid shell spins independently around its sphere center
+      // Speed varies per node so they all look different
+      p.grids.forEach((g, i) => {
+        const s = p.rotSpeed * (2.8 + i * 0.06);
+        g.rotation.x += s * 1.8;
+        g.rotation.y -= s * 1.2;
+        g.rotation.z += s * 0.6;
+      });
+
+      // Soul star flicker — wide intensity swings simulate stellar pulsation
+      const ft = time * 3.0;
+      const flicker = 3.8 + Math.sin(ft) * 0.9 + Math.sin(ft * 2.7) * 0.4 + Math.sin(ft * 0.5) * 0.3;
+      (p.soul.material as THREE.MeshStandardMaterial).emissiveIntensity = flicker;
+      p.soul.scale.setScalar(1.0 + Math.sin(ft * 1.7) * 0.10);
+      p.soulGlows.forEach((g, i) => {
+        const baseOpacity = ([0.30, 0.20, 0.12, 0.07, 0.03][i]) ?? 0.03;
+        (g.material as THREE.MeshBasicMaterial).opacity =
+          baseOpacity * (0.70 + Math.sin(ft * (0.9 + i * 0.35)) * 0.30);
+        g.scale.setScalar(1.0 + Math.sin(ft * 0.6 + i * 1.1) * 0.16);
+      });
+
+      // Subtle outer sphere body pulse
+      p.spheres.forEach((s, i) => {
+        if (i === 0) return; // soul handled above
+        s.scale.setScalar(1.0 + Math.sin(time * 1.0 + i * 0.40) * 0.05);
+      });
+
+      // Gentle positional drift
+      p.group.position.x = p.origin[0] + Math.sin(time * p.driftFreq + p.driftPhase) * 1.8;
+      p.group.position.y = p.origin[1] + Math.cos(time * p.driftFreq * 0.65 + p.driftPhase) * 1.8;
+    });
+
+    camera.position.x = mouseX * 5;
+    camera.position.y = mouseY * 5;
     camera.lookAt(scene.position);
 
     renderer.render(scene, camera);
   }
 
-  // クリーンアップ
   function cleanupThreeAnimation() {
-    // アニメーションループの停止
     if (animationId !== null) {
       cancelAnimationFrame(animationId);
       animationId = null;
     }
-
-    // イベントリスナーの削除
     document.removeEventListener('mousemove', handleMouseMove);
     window.removeEventListener('resize', handleResize);
 
-    // Three.jsオブジェクトのクリーンアップ
     if (particlesMesh) {
       particlesMesh.geometry.dispose();
       particlesMesh.material.dispose();
       particlesMesh = null;
     }
 
-    if (torus) {
-      torus.geometry.dispose();
-      torus.material.dispose();
-      torus = null;
-    }
+    planets.forEach(p => {
+      p.group.traverse(child => {
+        if (
+          child instanceof THREE.Mesh ||
+          child instanceof THREE.LineSegments ||
+          child instanceof THREE.Points
+        ) {
+          child.geometry.dispose();
+          (child.material as THREE.Material).dispose();
+        }
+      });
+    });
+    planets = [];
 
-    if (torus2) {
-      torus2.geometry.dispose();
-      torus2.material.dispose();
-      torus2 = null;
-    }
-
-    if (renderer) {
-      renderer.dispose();
-      renderer = null;
-    }
-
+    if (renderer) { renderer.dispose(); renderer = null; }
     scene = null;
     camera = null;
   }
 
-  // Astro View Transitionsに対応した初期化
-  document.addEventListener('astro:page-load', () => {
-    initThreeAnimation();
-  });
-
-  // ページ離脱時のクリーンアップ
-  document.addEventListener('astro:before-preparation', () => {
-    cleanupThreeAnimation();
-  });
+  document.addEventListener('astro:page-load', () => { initThreeAnimation(); });
+  document.addEventListener('astro:before-preparation', () => { cleanupThreeAnimation(); });
 </script>
 
 <style>

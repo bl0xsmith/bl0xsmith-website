@@ -1,18 +1,18 @@
 /* Global styles for bl0xsmith cosmic theme */
 :root {
   /* ── Core Palette ─────────────────────────────────────────────── */
-  --color-bg-dark: #08080F;          /* deep cosmic void */
-  --color-bg-darker: #03030A;        /* the true void */
-  --color-bg-card: #0F0F1E;          /* deep space surface */
-  --color-primary: #6D6AFF;          /* cosmic indigo */
-  --color-primary-dark: #5855E0;     /* cosmic indigo hover */
-  --color-accent-purple: #8B3DFF;    /* galaxy violet */
-  --color-accent-pink: #D4A843;      /* sacred gold */
-  --color-accent-blue: #6D6AFF;      /* cosmic indigo alias */
-  --color-accent-cyan: #22D3EE;      /* stellar cyan */
-  --color-text: #EEEEFF;             /* cosmic white */
-  --color-text-dim: #7B7BA0;         /* dim starlight */
-  --color-border: #1A1A35;           /* deep space border */
+  --color-bg-dark: #08080f; /* deep cosmic void */
+  --color-bg-darker: #03030a; /* the true void */
+  --color-bg-card: #0f0f1e; /* deep space surface */
+  --color-primary: #6d6aff; /* cosmic indigo */
+  --color-primary-dark: #5855e0; /* cosmic indigo hover */
+  --color-accent-purple: #8b3dff; /* galaxy violet */
+  --color-accent-pink: #d4a843; /* sacred gold */
+  --color-accent-blue: #6d6aff; /* cosmic indigo alias */
+  --color-accent-cyan: #22d3ee; /* stellar cyan */
+  --color-text: #eeeeff; /* cosmic white */
+  --color-text-dim: #7b7ba0; /* dim starlight */
+  --color-border: #1a1a35; /* deep space border */
   --color-shadow: rgba(109, 106, 255, 0.3);
 
   /* ── Glow Effects ─────────────────────────────────────────────── */
@@ -33,8 +33,8 @@
   --color-nav-backdrop-solid: rgba(8, 8, 15, 0.98);
 
   /* ── Typography ───────────────────────────────────────────────── */
-  --font-heading: 'Space Grotesk', system-ui, sans-serif;
-  --font-body: 'Inter', system-ui, sans-serif;
+  --font-heading: "Space Grotesk", system-ui, sans-serif;
+  --font-body: "Inter", system-ui, sans-serif;
 
   /* ── Spacing ──────────────────────────────────────────────────── */
   --nav-height: 80px;
@@ -48,13 +48,23 @@
 
 html {
   font-family: var(--font-body);
-  background: var(--color-bg-dark);
+  background:
+    radial-gradient(circle at 20% 50%, rgba(139, 61, 255, 0.05) 0%, transparent 70%),
+    radial-gradient(circle at 80% 20%, rgba(212, 168, 67, 0.03) 0%, transparent 70%),
+    radial-gradient(circle at 40% 80%, rgba(109, 106, 255, 0.05) 0%, transparent 70%),
+    var(--color-bg-darker);
+  background-attachment: fixed;
   color: var(--color-text);
   overflow-x: hidden;
   scroll-behavior: smooth;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-family: var(--font-heading);
 }
 
@@ -62,34 +72,6 @@ body {
   min-height: 100vh;
   position: relative;
   overflow-x: hidden;
-}
-
-/* Ambient nebula gradient — void-dominant with subtle cosmic pockets */
-body::before {
-  content: '';
-  position: fixed;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background:
-    radial-gradient(circle at 20% 50%, rgba(139, 61, 255, 0.08) 0%, transparent 50%),
-    radial-gradient(circle at 80% 20%, rgba(212, 168, 67, 0.05) 0%, transparent 50%),
-    radial-gradient(circle at 40% 80%, rgba(109, 106, 255, 0.08) 0%, transparent 50%);
-  animation: gradientShift 20s ease infinite;
-  z-index: -1;
-}
-
-@keyframes gradientShift {
-  0%, 100% {
-    transform: translate(0, 0) rotate(0deg);
-  }
-  33% {
-    transform: translate(10%, -10%) rotate(120deg);
-  }
-  66% {
-    transform: translate(-10%, 10%) rotate(240deg);
-  }
 }
 
 /* Custom scrollbar */
@@ -102,17 +84,26 @@ body::before {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, var(--color-accent-purple), var(--color-accent-pink));
+  background: linear-gradient(
+    180deg,
+    var(--color-accent-purple),
+    var(--color-accent-pink)
+  );
   border-radius: 5px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, var(--color-accent-pink), var(--color-accent-blue));
+  background: linear-gradient(
+    180deg,
+    var(--color-accent-pink),
+    var(--color-accent-blue)
+  );
 }
 
 /* Global animations */
 @keyframes float {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0px);
   }
   50% {
@@ -121,11 +112,14 @@ body::before {
 }
 
 @keyframes pulse-glow {
-  0%, 100% {
+  0%,
+  100% {
     box-shadow: 0 0 20px var(--color-shadow);
   }
   50% {
-    box-shadow: 0 0 40px var(--color-shadow), 0 0 60px var(--color-shadow);
+    box-shadow:
+      0 0 40px var(--color-shadow),
+      0 0 60px var(--color-shadow);
   }
 }
 
