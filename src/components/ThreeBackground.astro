@@ -62,23 +62,24 @@
       posArray[i + 1] = (Math.random() - 0.5) * 100;
       posArray[i + 2] = (Math.random() - 0.5) * 100;
 
-      // ランダムな色（紫、ピンク、青の系統）
+      // Particle colors: galaxy violet / sacred gold / cosmic indigo
+      // Mirror these in global.css --color-accent-purple / --color-accent-pink / --color-primary
       const colorType = Math.random();
       if (colorType < 0.33) {
-        // 紫
-        colorArray[i] = 0.66;
-        colorArray[i + 1] = 0.33;
-        colorArray[i + 2] = 0.97;
+        // galaxy violet #8B3DFF
+        colorArray[i] = 0.545;
+        colorArray[i + 1] = 0.239;
+        colorArray[i + 2] = 1.0;
       } else if (colorType < 0.66) {
-        // ピンク
-        colorArray[i] = 0.93;
-        colorArray[i + 1] = 0.28;
-        colorArray[i + 2] = 0.60;
+        // sacred gold #D4A843
+        colorArray[i] = 0.831;
+        colorArray[i + 1] = 0.659;
+        colorArray[i + 2] = 0.263;
       } else {
-        // 青
-        colorArray[i] = 0.23;
-        colorArray[i + 1] = 0.51;
-        colorArray[i + 2] = 0.96;
+        // cosmic indigo #6D6AFF
+        colorArray[i] = 0.427;
+        colorArray[i + 1] = 0.416;
+        colorArray[i + 2] = 1.0;
       }
     }
 
@@ -100,7 +101,7 @@
     // 回転するトーラス（ドーナツ型）の追加
     const torusGeometry = new THREE.TorusGeometry(10, 3, 16, 100);
     const torusMaterial = new THREE.MeshBasicMaterial({
-      color: 0xa855f7,
+      color: 0x8b3dff, // galaxy violet — mirrors --color-accent-purple in global.css
       wireframe: true,
       transparent: true,
       opacity: 0.3,
@@ -111,7 +112,7 @@
     // 2つ目のトーラス
     const torus2Geometry = new THREE.TorusGeometry(15, 2, 16, 100);
     const torus2Material = new THREE.MeshBasicMaterial({
-      color: 0xec4899,
+      color: 0xd4a843, // sacred gold — mirrors --color-accent-pink in global.css
       wireframe: true,
       transparent: true,
       opacity: 0.2,

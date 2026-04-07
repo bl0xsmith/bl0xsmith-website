@@ -1,24 +1,42 @@
-/* Global styles for dark abyss theme */
+/* Global styles for bl0xsmith cosmic theme */
 :root {
-  /* Color Palette - Developer Dark Theme */
-  --color-bg-dark: #0F172A;
-  --color-bg-darker: #020617;
-  --color-bg-card: #1E293B;
-  --color-primary: #3B82F6;
-  --color-accent-purple: #8B5CF6;
-  --color-accent-pink: #EC4899;
-  --color-accent-blue: #3B82F6;
-  --color-accent-cyan: #06B6D4;
-  --color-text: #F1F5F9;
-  --color-text-dim: #94A3B8;
-  --color-border: #334155;
-  --color-shadow: rgba(59, 130, 246, 0.3);
+  /* ── Core Palette ─────────────────────────────────────────────── */
+  --color-bg-dark: #08080F;          /* deep cosmic void */
+  --color-bg-darker: #03030A;        /* the true void */
+  --color-bg-card: #0F0F1E;          /* deep space surface */
+  --color-primary: #6D6AFF;          /* cosmic indigo */
+  --color-primary-dark: #5855E0;     /* cosmic indigo hover */
+  --color-accent-purple: #8B3DFF;    /* galaxy violet */
+  --color-accent-pink: #D4A843;      /* sacred gold */
+  --color-accent-blue: #6D6AFF;      /* cosmic indigo alias */
+  --color-accent-cyan: #22D3EE;      /* stellar cyan */
+  --color-text: #EEEEFF;             /* cosmic white */
+  --color-text-dim: #7B7BA0;         /* dim starlight */
+  --color-border: #1A1A35;           /* deep space border */
+  --color-shadow: rgba(109, 106, 255, 0.3);
 
-  /* Typography */
+  /* ── Glow Effects ─────────────────────────────────────────────── */
+  --color-glow-primary: rgba(109, 106, 255, 0.15);
+  --color-btn-shadow: rgba(109, 106, 255, 0.4);
+  --color-btn-shadow-hover: rgba(109, 106, 255, 0.5);
+  --color-glow-violet: rgba(139, 61, 255, 0.15);
+
+  /* ── Surface Tints ────────────────────────────────────────────── */
+  --color-surface-primary: rgba(109, 106, 255, 0.1);
+  --color-surface-primary-subtle: rgba(109, 106, 255, 0.05);
+  --color-surface-violet: rgba(139, 61, 255, 0.1);
+  --color-border-violet: rgba(139, 61, 255, 0.3);
+  --color-border-violet-subtle: rgba(139, 61, 255, 0.2);
+
+  /* ── Navigation ───────────────────────────────────────────────── */
+  --color-nav-backdrop: rgba(8, 8, 15, 0.85);
+  --color-nav-backdrop-solid: rgba(8, 8, 15, 0.98);
+
+  /* ── Typography ───────────────────────────────────────────────── */
   --font-heading: 'Space Grotesk', system-ui, sans-serif;
-  --font-body: 'DM Sans', system-ui, sans-serif;
+  --font-body: 'Inter', system-ui, sans-serif;
 
-  /* Spacing */
+  /* ── Spacing ──────────────────────────────────────────────────── */
   --nav-height: 80px;
 }
 
@@ -36,7 +54,6 @@ html {
   scroll-behavior: smooth;
 }
 
-/* Headings use Space Grotesk */
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-heading);
 }
@@ -47,7 +64,7 @@ body {
   overflow-x: hidden;
 }
 
-/* Animated background gradient */
+/* Ambient nebula gradient — void-dominant with subtle cosmic pockets */
 body::before {
   content: '';
   position: fixed;
@@ -56,9 +73,9 @@ body::before {
   width: 200%;
   height: 200%;
   background:
-    radial-gradient(circle at 20% 50%, rgba(168, 85, 247, 0.1) 0%, transparent 50%),
-    radial-gradient(circle at 80% 80%, rgba(236, 72, 153, 0.1) 0%, transparent 50%),
-    radial-gradient(circle at 40% 20%, rgba(59, 130, 246, 0.1) 0%, transparent 50%);
+    radial-gradient(circle at 20% 50%, rgba(139, 61, 255, 0.08) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(212, 168, 67, 0.05) 0%, transparent 50%),
+    radial-gradient(circle at 40% 80%, rgba(109, 106, 255, 0.08) 0%, transparent 50%);
   animation: gradientShift 20s ease infinite;
   z-index: -1;
 }
@@ -124,13 +141,15 @@ body::before {
   }
 }
 
+/* cosmic indigo → sacred gold → galaxy violet → stellar cyan → back to indigo */
 .shimmer-text {
   background: linear-gradient(
     90deg,
-    var(--color-accent-purple),
+    var(--color-primary),
     var(--color-accent-pink),
-    var(--color-accent-blue),
-    var(--color-accent-purple)
+    var(--color-accent-purple),
+    var(--color-accent-cyan),
+    var(--color-primary)
   );
   background-size: 200% auto;
   background-clip: text;
