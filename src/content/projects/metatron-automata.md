@@ -27,4 +27,4 @@ The platform tracks open and closed P&L in real time across all active positions
 
 I wanted a system I owned completely — from signal to execution to reconciliation — that I could run continuously and improve over time. Most commercial tools are black boxes. Metatron Automata is the opposite: every component is instrumented, observable, and replaceable.
 
-It's also where I apply what I learn building production trading infrastructure at MetaMask to a system running my own capital across my own strategies.
+It's also where I apply what I learn building production trading infrastructure professionally to a system running my own capital across my own strategies.

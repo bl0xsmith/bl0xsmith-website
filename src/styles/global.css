@@ -151,3 +151,17 @@ body {
   -webkit-text-fill-color: transparent;
   animation: text-shimmer 3s linear infinite;
 }
+
+/* Mailto links */
+a[href^="mailto"] {
+  color: var(--color-accent-purple);
+  text-decoration: none;
+  border-bottom: 1px solid var(--color-border-violet);
+  padding-bottom: 1px;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+a[href^="mailto"]:hover {
+  color: var(--color-primary);
+  border-bottom-color: var(--color-primary);
+}
