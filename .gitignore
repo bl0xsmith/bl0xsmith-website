@@ -24,3 +24,10 @@ pnpm-debug.log*
 
 # vscode setting
 .vscode/
+
+# astro generated files
+.astro/
+
+# AI tooling
+.claude/
+.serena/
