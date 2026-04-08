@@ -8,7 +8,7 @@ const relativePath = currentPath.replace(base.slice(0, -1), '') || '/';
 
 <nav class="nav">
   <div class="nav-container">
-    <a href={base} class="logo">DARKNESS</a>
+    <a href={base} class="logo">bl0xsmith</a>
 
     <div class="nav-links">
       <a href={base} class:list={['nav-link', { active: relativePath === '/' }]}>
@@ -71,11 +71,11 @@ const relativePath = currentPath.replace(base.slice(0, -1), '') || '/';
   }
 
   .logo {
-    font-family: var(--font-heading);
-    font-size: 1.25rem;
-    font-weight: 700;
+    font-family: var(--font-body);
+    font-size: 1.1rem;
+    font-weight: 200;
     text-decoration: none;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.3em;
     color: var(--color-text);
     transition: color 0.2s ease;
   }

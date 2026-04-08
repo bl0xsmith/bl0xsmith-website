@@ -1,36 +1,34 @@
 ---
 title: "Hello, I'm bl0xsmith"
-description: "An introduction to who I am, what I build, and why I build it — from dark aesthetics to WebGL and beyond."
+description: "An intro to who I am and what I'm building — AI automation, trading systems, and blockchain engineering."
 pubDate: 2026-04-07
-tags: ["intro", "creative coding", "webgl", "dark ui"]
+tags: ["intro", "ai-automation", "trading", "blockchain", "web3"]
 ---
 
-I go by bl0xsmith. I'm a programmer who builds things for the web — not just functional things, but things that feel alive.
+I go by bl0xsmith. I'm a staff-level software engineer who builds AI-first systems at the intersection of trading automation, blockchain, and AI engineering.
 
-My work sits at the intersection of engineering and visual craft. I care about performance and clean code, but I also care about what something *looks* like in motion, how a particle dissolves, how a glow pulses in rhythm with an interaction. That tension between precision and expression is where I spend most of my time.
+Most of my professional work has lived where real money moves at high speed — building the trading infrastructure inside MetaMask, designing execution engines that handle market and limit orders across perpetual contracts, running real-time P&L and reconciliation, and integrating DeFi protocols that process nine-figure TVL. The stakes make you precise.
 
-## Where I'm Coming From
+In parallel, I've been building Metatron Automata — my personal AI-first agentic trading platform that runs across crypto, forex, equities, and perps. It's where I apply everything I've learned in production to a system I own end-to-end: signal ingestion, agent-capable strategy execution, risk controls, and reconciliation. It's been running since 2021 and it keeps getting better.
 
-I started out like most developers — building UIs, chasing bugs, learning the fundamentals. But somewhere along the way I became obsessed with the visual layer. Not in a shallow sense, but technically: what the GPU is actually doing, how shaders work, why some animations feel smooth and others feel cheap.
+## Why bl0xsmith
 
-Dark themes weren't a style choice for me — they became a constraint that pushed me to be more intentional. When you strip away the noise of a white background, every element has to earn its place. Color becomes a signal. Motion becomes meaning.
+The alias is intentional. It sits between blockchain (`bl0x`) and the craft of building (`smith`). Everything I do is about constructing infrastructure that operates at the protocol layer — whether that's on-chain smart contracts, trading system pipelines, or AI agent loops.
 
-## What I Build
+I'm not a content creator or a theme seller. I'm an engineer who builds systems that run money, automate decisions, and interact with blockchain networks. This site is where I document that work and share what I learn.
 
-Most of my work falls into a few categories:
+## What I'm Building
 
-**Creative web experiences** — Three.js particle systems, WebGL shaders, interactive 3D elements that run in the browser at 60fps. I like the challenge of making GPU-driven visuals that are also practical and accessible.
+**Metatron Automata** is my flagship personal project — an AI-first automated trading platform. It's built on an event-driven architecture that streams price, volume, and sentiment signals from multiple sources into agent-capable strategies. Those strategies run indicator analysis, apply risk controls (TP/SL, leverage limits, position sizing), and execute orders across markets. The goal is a fully autonomous trading system where AI agents manage strategy selection and execution decisions.
 
-**Dark UI systems** — Carefully designed interfaces built on tight color palettes, purposeful typography, and animation that responds to the user rather than just playing at them.
+**MetaMask Perps** — at ConsenSys, I was the primary engineer who shipped perpetuals trading inside MetaMask. We built the full flow from scratch: market and limit orders, take-profit and stop-loss, margin and leverage, liquidation and risk engine, real-time P&L, and price feed infrastructure across both mobile and extension. Within four months of launch it became the #1 revenue driver across the entire company.
 
-**Tools and experiments** — CLI utilities, theme packages, shader sandboxes. Smaller projects I build because I want them to exist.
+**MetaMask Earn & ETH Staking** — alongside Perps I shipped the Earn product, which drove $175M+ TVL in a single month (73% of the annual target), and the ETH staking integration that has seen 146K+ ETH staked since release.
 
-## Stack
+## What This Blog Is
 
-Day to day I work with TypeScript, Astro, Three.js, and GLSL. I lean on the web platform as much as possible — the less framework overhead, the better. Performance is non-negotiable; anything that ships to a browser should be fast.
+I'll write about what I'm building and what I'm learning: architecture decisions in trading systems, how AI agents operate in financial contexts, lessons from shipping DeFi products at scale, and engineering patterns that I find actually useful in production.
 
-## What This Space Is
+No SEO games, no content calendar. Just things worth writing down.
 
-This blog is where I'll write about what I'm building and what I'm learning. Shader techniques, animation patterns, design decisions, the occasional deep dive into something I had to figure out the hard way. No content calendar, no SEO optimization — just things worth writing down.
-
-If you want to see what I'm working on, the [projects](/projects) page is the place to start.
+If you want to see the work, start at the [projects](/projects) page.

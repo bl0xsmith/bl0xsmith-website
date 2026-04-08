@@ -5,14 +5,18 @@ const base = import.meta.env.BASE_URL;
 
 <section class="hero">
   <div class="hero-content">
-    <div class="greeting">Hello, I'm</div>
     <h1 class="hero-title">
-      <span class="title-text">DARKNESS</span>
+      <div class="greeting">Hello, I'm</div>
+
+      <span class="title-text">bl0xsmith</span>
     </h1>
-    <p class="hero-subtitle">Web Developer & Creative Coder</p>
+    <div class="greeting">I build at the intersection of</div>
+
+    <p class="hero-subtitle">AI Automation &middot; Trading Systems &middot; Blockchain</p>
     <p class="hero-description">
-      Building immersive web experiences with Three.js, modern animations, and dark aesthetics.
-      Specializing in motion-rich interfaces that push the boundaries of what's possible on the web.
+      Experienced software engineer shipping AI-first trading infrastructure across crypto, forex, and perps.
+      Launched MetaMask Perps — #1 company revenue driver at ConsenSys. Building Metatron Automata,
+      an agentic automated trading platform across all major asset classes.
     </p>
     <div class="hero-buttons">
       <a href={`${base}projects`} class="btn btn-primary">
@@ -30,9 +34,10 @@ const base = import.meta.env.BASE_URL;
     <!-- Tech stack badges -->
     <div class="tech-stack">
       <span class="tech-badge">TypeScript</span>
-      <span class="tech-badge">React</span>
-      <span class="tech-badge">Three.js</span>
-      <span class="tech-badge">Astro</span>
+      <span class="tech-badge">Solidity</span>
+      <span class="tech-badge">NestJS</span>
+      <span class="tech-badge">AI Agents</span>
+      <span class="tech-badge">Ethereum</span>
     </div>
   </div>
 
@@ -63,7 +68,7 @@ const base = import.meta.env.BASE_URL;
 
   .greeting {
     font-size: clamp(1rem, 2vw, 1.25rem);
-    color: var(--color-primary);
+    color: var(--color-text-dim);
     margin-bottom: 0.75rem;
     font-weight: 500;
     letter-spacing: 0.1em;

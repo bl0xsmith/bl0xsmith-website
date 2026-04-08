@@ -1,24 +1,22 @@
 {
-  "name": "astro-darkness",
+  "name": "bl0xsmith-website",
   "type": "module",
-  "version": "1.0.1",
-  "description": "A dark-themed Astro portfolio/blog template with Three.js particles and modern animations",
+  "version": "1.0.0",
+  "description": "bl0xsmith personal site — AI automation, trading systems, and blockchain engineering",
   "keywords": [
-    "astro",
-    "theme",
-    "blog",
-    "portfolio",
-    "dark-mode",
-    "three.js",
-    "typescript"
+    "ai-automation",
+    "trading-systems",
+    "blockchain",
+    "web3",
+    "astro"
   ],
-  "author": "kpab",
+  "author": "bl0xsmith",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/kpab/astro-darkness"
+    "url": "https://github.com/bl0xsmith/bl0xsmith-website"
   },
-  "homepage": "https://kpab.github.io/astro-darkness",
+  "homepage": "https://bl0xsmith.dev",
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
