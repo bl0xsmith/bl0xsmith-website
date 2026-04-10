@@ -1,11 +1,20 @@
 ---
 title: "Perpetuals Trading Platform"
 description: "A full perps trading product — market/limit orders, TP/SL, margin/leverage, real-time P&L and liquidation. Became the #1 company-wide revenue driver within 4 months of launch."
-tags: ["Perps", "DeFi", "TypeScript", "React Native", "React", "Trading"]
+tags:
+  [
+    "Perps",
+    "DeFi",
+    "TypeScript",
+    "React Native",
+    "React",
+    "Trading",
+    "Hyperliquid",
+  ]
 featured: true
 ---
 
-A perpetuals trading product I built as primary engineer on an advanced trading team. Launched across a mobile app and browser extension, it became the #1 revenue driver across the entire company within approximately four months of release.
+A perpetuals trading product I built as a primary engineer on an advanced trading team. Launched across a mobile app and browser extension, it became the #1 revenue driver across the entire company within approximately four months of release.
 
 ## What I Built
 
@@ -25,4 +34,4 @@ A perpetuals trading product I built as primary engineer on an advanced trading 
 
 ## Stack
 
-TypeScript, React Native, React, NestJS — integrated with DeFi protocol contracts on EVM chains, price oracle integrations, and on-chain position management.
+TypeScript, React Native, Hyperliquid, Claude — integrated with DeFi protocol on EVM compatible chain
