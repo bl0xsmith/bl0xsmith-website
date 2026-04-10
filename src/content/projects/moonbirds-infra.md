@@ -11,7 +11,7 @@ At PROOF (the studio behind the Moonbirds NFT, later acquired by Yuga Labs), I w
 
 The most impactful piece of work was an optimization of the core contract listener micro-service — the system responsible for ingesting on-chain events from PROOF's various NFT or experience related Ethereum contracts in real time.
 
-**Before:** The service monitored approximately 10 contracts and struggled with memory growth under load, making it impractical to scale.
+**Before:** The service monitored approximately 10 contracts and struggled with memory growth under load, making it impractical to scale vertically before scaling horizontally.
 
 **After:** A refactor of the event processing architecture reduced memory usage by **96.88%** and allowed the service to stably monitor **hundreds of contracts simultaneously** — opening the door to expanding Moonbirds' on-chain engagement features without infrastructure constraints.
 
