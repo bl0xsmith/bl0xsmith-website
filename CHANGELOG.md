@@ -34,7 +34,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - About page with skills and features sections
 - Google Fonts integration (Space Grotesk + DM Sans)
 - GitHub Pages deployment workflow
-- MIT License
+- Source-available license (see LICENSE)
 
 ### Technical Stack
 - Astro 5.1.0 as the static site generator
