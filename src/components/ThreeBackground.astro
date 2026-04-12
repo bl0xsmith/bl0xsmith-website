@@ -1,8 +1,6 @@
 ---
-// Three.js による3D背景アニメーション
+// Three.js による3D背景アニメーション — canvas lives in BaseLayout (#three-canvas)
 ---
-
-<canvas id="three-canvas"></canvas>
 
 <script>
   import * as THREE from 'three';
@@ -347,18 +345,18 @@
     camera = null;
   }
 
-  document.addEventListener('astro:page-load', () => { initThreeAnimation(); });
+  function bootThree() {
+    initThreeAnimation();
+  }
+
+  // astro:page-load runs after View Transitions / ClientRouter navigations (and may not fire on full loads without it).
+  document.addEventListener('astro:page-load', bootThree);
+  // Full page loads: ensure WebGL starts when ClientRouter is not used.
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', bootThree);
+  } else {
+    bootThree();
+  }
+
   document.addEventListener('astro:before-preparation', () => { cleanupThreeAnimation(); });
 </script>
-
-<style>
-  #three-canvas {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -1;
-    pointer-events: none;
-  }
-</style>

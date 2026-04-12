@@ -1,0 +1,74 @@
+/* Design tokens + first-paint surfaces (inlined in BaseLayout head to prevent FOUC) */
+:root {
+  /* ── Core Palette ─────────────────────────────────────────────── */
+  --color-bg-dark: #08080f;          /* deep void */
+  --color-bg-darker: #000000;        /* true OLED black */
+  --color-bg-card: #0c0c15;          /* fallback solid surface */
+  --color-primary: #4f65f5;          /* cool blue-indigo */
+  --color-primary-dark: #3e52df;     /* hover state */
+  --color-accent-purple: #4f65f5;    /* consolidated to primary */
+  --color-accent-pink: #8891a8;      /* cool slate (replaces gold) */
+  --color-accent-blue: #4f65f5;      /* primary alias */
+  --color-accent-cyan: #8891a8;      /* cool slate alias (cyan removed) */
+  --color-text: #e8e8f0;             /* slightly cooler white */
+  --color-text-dim: #6b7190;         /* neutral dim, slightly purple-tinted */
+  --color-border: #141428;           /* barely visible dark edge */
+
+  /* ── Glow Effects — significantly reduced ─────────────────────── */
+  --color-shadow: rgba(79, 101, 245, 0.18);
+  --color-glow-primary: rgba(79, 101, 245, 0.08);
+  --color-btn-shadow: rgba(79, 101, 245, 0.18);
+  --color-btn-shadow-hover: rgba(79, 101, 245, 0.28);
+  --color-glow-violet: rgba(79, 101, 245, 0.06);
+
+  /* ── Surface Tints ────────────────────────────────────────────── */
+  --color-surface-primary: rgba(79, 101, 245, 0.07);
+  --color-surface-primary-subtle: rgba(79, 101, 245, 0.04);
+  --color-surface-violet: rgba(79, 101, 245, 0.06);
+  --color-border-violet: rgba(79, 101, 245, 0.22);
+  --color-border-violet-subtle: rgba(79, 101, 245, 0.14);
+
+  /* ── Dark Glassmorphism System ────────────────────────────────── */
+  --glass-bg: rgba(255, 255, 255, 0.04);
+  --glass-bg-hover: rgba(255, 255, 255, 0.07);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-border-hover: rgba(79, 101, 245, 0.35);
+  --glass-blur: blur(14px);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  --glass-shadow-hover: 0 12px 40px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(79, 101, 245, 0.15);
+
+  /* ── Navigation ───────────────────────────────────────────────── */
+  --color-nav-backdrop: rgba(0, 0, 0, 0.70);
+  --color-nav-backdrop-solid: rgba(0, 0, 0, 0.97);
+
+  /* ── Typography ───────────────────────────────────────────────── */
+  --font-heading: "Plus Jakarta Sans", system-ui, sans-serif;
+  --font-body: "Inter", system-ui, sans-serif;
+
+  /* ── Spacing ──────────────────────────────────────────────────── */
+  --nav-height: 80px;
+}
+
+/* Dark first paint on html only. Body must stay transparent: #three-canvas uses z-index: -1
+   and sits below body’s background; an opaque body would hide the WebGL layer entirely. */
+html {
+  color-scheme: dark;
+  background-color: var(--color-bg-darker, #000000);
+}
+
+body {
+  color: var(--color-text);
+  background-color: transparent;
+}
+
+#three-canvas {
+  background-color: var(--color-bg-darker, #000000);
+}
+
+/* View Transitions root layers (harmless if unused; kept for browsers that expose ::view-transition-*) */
+::view-transition-group(root),
+::view-transition-image-pair(root),
+::view-transition-old(root),
+::view-transition-new(root) {
+  background-color: var(--color-bg-darker, #000000);
+}

@@ -347,4 +347,9 @@ const imageSrc = image?.startsWith('/') ? `${base}${image.slice(1)}` : image;
     });
   }
   document.addEventListener('astro:page-load', initCopyButtons);
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initCopyButtons);
+  } else {
+    initCopyButtons();
+  }
 </script>

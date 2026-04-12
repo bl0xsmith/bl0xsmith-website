@@ -315,4 +315,9 @@ const formattedUpdatedDate = updatedDate?.toLocaleDateString('en-US', {
     });
   }
   document.addEventListener('astro:page-load', initCopyButtons);
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initCopyButtons);
+  } else {
+    initCopyButtons();
+  }
 </script>

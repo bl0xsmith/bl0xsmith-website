@@ -213,22 +213,42 @@ const relativePath = currentPath.replace(base.slice(0, -1), '') || '/';
 </style>
 
 <script>
-  document.addEventListener('astro:page-load', () => {
+  let mobileNavAbort: AbortController | null = null;
+
+  function initMobileNav() {
     const mobileMenuBtn = document.getElementById('mobile-menu-btn');
     const mobileMenu = document.getElementById('mobile-menu');
 
-    if (mobileMenuBtn && mobileMenu) {
-      mobileMenuBtn.addEventListener('click', () => {
-        mobileMenu.classList.toggle('open');
-      });
+    if (!mobileMenuBtn || !mobileMenu) return;
 
-      // Close menu when clicking a link
-      const mobileLinks = mobileMenu.querySelectorAll('.mobile-nav-link');
-      mobileLinks.forEach(link => {
-        link.addEventListener('click', () => {
+    mobileNavAbort?.abort();
+    mobileNavAbort = new AbortController();
+    const { signal } = mobileNavAbort;
+
+    mobileMenuBtn.addEventListener(
+      'click',
+      () => {
+        mobileMenu.classList.toggle('open');
+      },
+      { signal }
+    );
+
+    const mobileLinks = mobileMenu.querySelectorAll('.mobile-nav-link');
+    mobileLinks.forEach((link) => {
+      link.addEventListener(
+        'click',
+        () => {
           mobileMenu.classList.remove('open');
-        });
-      });
-    }
-  });
+        },
+        { signal }
+      );
+    });
+  }
+
+  document.addEventListener('astro:page-load', initMobileNav);
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initMobileNav);
+  } else {
+    initMobileNav();
+  }
 </script>

@@ -374,9 +374,20 @@ const base = import.meta.env.BASE_URL;
     'Rust Engineering',
   ];
 
+  let typewriterTimer: ReturnType<typeof setTimeout> | null = null;
+
+  function clearTypewriterTimer() {
+    if (typewriterTimer !== null) {
+      clearTimeout(typewriterTimer);
+      typewriterTimer = null;
+    }
+  }
+
   function initTypewriter() {
     const el = document.getElementById('typewriter');
     if (!el) return;
+
+    clearTypewriterTimer();
 
     const node = el; // narrowed, non-null
 
@@ -385,13 +396,18 @@ const base = import.meta.env.BASE_URL;
     let deleting = false;
     let paused = false;
 
+    function schedule(next: () => void, ms: number) {
+      clearTypewriterTimer();
+      typewriterTimer = setTimeout(next, ms);
+    }
+
     function tick() {
       const phrase = PHRASES[phraseIdx]!;
 
       if (paused) {
         paused = false;
         deleting = true;
-        setTimeout(tick, 400);
+        schedule(tick, 400);
         return;
       }
 
@@ -400,20 +416,20 @@ const base = import.meta.env.BASE_URL;
         charIdx++;
         if (charIdx === phrase.length) {
           paused = true;
-          setTimeout(tick, 2000);
+          schedule(tick, 2000);
           return;
         }
-        setTimeout(tick, 60);
+        schedule(tick, 60);
       } else {
         node.textContent = phrase.slice(0, charIdx - 1);
         charIdx--;
         if (charIdx === 0) {
           deleting = false;
           phraseIdx = (phraseIdx + 1) % PHRASES.length;
-          setTimeout(tick, 300);
+          schedule(tick, 300);
           return;
         }
-        setTimeout(tick, 30);
+        schedule(tick, 30);
       }
     }
 
@@ -421,4 +437,9 @@ const base = import.meta.env.BASE_URL;
   }
 
   document.addEventListener('astro:page-load', initTypewriter);
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initTypewriter);
+  } else {
+    initTypewriter();
+  }
 </script>

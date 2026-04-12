@@ -221,6 +221,8 @@ const pages = [
 </style>
 
 <script>
+  let cmdPaletteAbort: AbortController | null = null;
+
   function initCommandPalette() {
     const overlay = document.getElementById('cmd-overlay');
     const backdrop = document.getElementById('cmd-backdrop');
@@ -228,6 +230,10 @@ const pages = [
     const list = document.getElementById('cmd-list');
 
     if (!overlay || !input || !list) return;
+
+    cmdPaletteAbort?.abort();
+    cmdPaletteAbort = new AbortController();
+    const signal = cmdPaletteAbort.signal;
 
     const items = Array.from(list.querySelectorAll<HTMLElement>('.cmd-item'));
     let activeIdx = 0;
@@ -280,44 +286,70 @@ const pages = [
     }
 
     // Cmd+K / Ctrl+K
-    document.addEventListener('keydown', (e) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
-        e.preventDefault();
-        overlay!.hidden ? open() : close();
-        return;
-      }
-      if (overlay!.hidden) return;
-      if (e.key === 'Escape') { close(); return; }
-      if (e.key === 'ArrowDown') {
-        e.preventDefault();
-        const visible = items.filter(el => !el.classList.contains('hidden'));
-        setActive(Math.min(activeIdx + 1, visible.length - 1));
-      }
-      if (e.key === 'ArrowUp') {
-        e.preventDefault();
-        setActive(Math.max(activeIdx - 1, 0));
-      }
-      if (e.key === 'Enter') { navigate(); }
-    });
+    document.addEventListener(
+      'keydown',
+      (e) => {
+        if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+          e.preventDefault();
+          overlay!.hidden ? open() : close();
+          return;
+        }
+        if (overlay!.hidden) return;
+        if (e.key === 'Escape') {
+          close();
+          return;
+        }
+        if (e.key === 'ArrowDown') {
+          e.preventDefault();
+          const visible = items.filter((el) => !el.classList.contains('hidden'));
+          setActive(Math.min(activeIdx + 1, visible.length - 1));
+        }
+        if (e.key === 'ArrowUp') {
+          e.preventDefault();
+          setActive(Math.max(activeIdx - 1, 0));
+        }
+        if (e.key === 'Enter') {
+          navigate();
+        }
+      },
+      { signal }
+    );
 
-    input.addEventListener('input', () => {
-      filterItems(input.value);
-    });
+    input.addEventListener(
+      'input',
+      () => {
+        filterItems(input.value);
+      },
+      { signal }
+    );
 
-    backdrop?.addEventListener('click', close);
+    backdrop?.addEventListener('click', close, { signal });
 
     items.forEach((item) => {
-      item.addEventListener('click', () => {
-        if (item.dataset.path) window.location.href = item.dataset.path;
-        close();
-      });
-      item.addEventListener('mouseenter', () => {
-        const visible = items.filter(el => !el.classList.contains('hidden'));
-        const idx = visible.indexOf(item);
-        if (idx >= 0) setActive(idx);
-      });
+      item.addEventListener(
+        'click',
+        () => {
+          if (item.dataset.path) window.location.href = item.dataset.path;
+          close();
+        },
+        { signal }
+      );
+      item.addEventListener(
+        'mouseenter',
+        () => {
+          const visible = items.filter((el) => !el.classList.contains('hidden'));
+          const idx = visible.indexOf(item);
+          if (idx >= 0) setActive(idx);
+        },
+        { signal }
+      );
     });
   }
 
   document.addEventListener('astro:page-load', initCommandPalette);
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initCommandPalette);
+  } else {
+    initCommandPalette();
+  }
 </script>

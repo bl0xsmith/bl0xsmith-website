@@ -1,6 +1,6 @@
 ---
+import tokensCss from '../styles/tokens.css?raw';
 import '../styles/global.css';
-import { ClientRouter } from 'astro:transitions';
 import Footer from '../components/Footer.astro';
 import CommandPalette from '../components/CommandPalette.astro';
 
@@ -17,9 +17,37 @@ const {
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en" style="background-color:#000000;color-scheme:dark">
   <head>
     <meta charset="UTF-8" />
+    <!-- Sync: set root surface before later stylesheets (no !important — rely on inline html style + cascade) -->
+    <script is:inline>
+      document.documentElement.style.backgroundColor = '#000000';
+      document.documentElement.style.colorScheme = 'dark';
+    </script>
+    <meta name="color-scheme" content="dark" />
+    <!-- Layer 0: fast parse + view-transition surfaces; hex matches --color-bg-darker in tokens.css -->
+    <style is:inline>
+      html {
+        background-color: #000000;
+        color-scheme: dark;
+      }
+      body {
+        background-color: transparent;
+      }
+      #three-canvas {
+        background-color: #000000;
+      }
+      ::view-transition-group(root),
+      ::view-transition-image-pair(root),
+      ::view-transition-old(root),
+      ::view-transition-new(root) {
+        background-color: #000000;
+      }
+    </style>
+    <!-- theme-color: keep in sync with --color-bg-darker in tokens.css -->
+    <meta name="theme-color" content="#000000" />
+    <style is:inline set:html={tokensCss} />
     <meta name="description" content={description} />
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/svg+xml" href={`${base}favicon.svg`} />
@@ -35,12 +63,14 @@ const {
     <meta name="twitter:site" content="@bl0xsmith" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
-    <!-- Google Fonts: Plus Jakarta Sans + Inter -->
+    <!-- Google Fonts: non-render-blocking via media=print swap -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" as="style" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" /></noscript>
     <title>{title}</title>
-    <ClientRouter />
+    <!-- No ClientRouter: View Transitions were causing a white flash on reload (root snapshot). Full-page nav is fine here. -->
   </head>
   <body>
     <div class="cursor-follower"></div>
@@ -117,22 +147,29 @@ const {
 
     <script>
       // Scroll reveal via IntersectionObserver
+      let revealObserver: IntersectionObserver | null = null;
       function initReveal() {
         if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-        const observer = new IntersectionObserver(
+        revealObserver?.disconnect();
+        revealObserver = new IntersectionObserver(
           (entries) => {
             entries.forEach((entry) => {
               if (entry.isIntersecting) {
                 entry.target.classList.add('visible');
-                observer.unobserve(entry.target);
+                revealObserver?.unobserve(entry.target);
               }
             });
           },
           { threshold: 0.08 }
         );
-        document.querySelectorAll('[data-reveal]').forEach((el) => observer.observe(el));
+        document.querySelectorAll('[data-reveal]').forEach((el) => revealObserver!.observe(el));
       }
       document.addEventListener('astro:page-load', initReveal);
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initReveal);
+      } else {
+        initReveal();
+      }
 
       // Custom cursor: instant position, hide when pointer leaves window, re-bind hovers on nav
       let cursorCoreBound = false;
