@@ -5,9 +5,14 @@ import ThreeBackground from '../../components/ThreeBackground.astro';
 import Navigation from '../../components/Navigation.astro';
 import ProjectCard from '../../components/ProjectCard.astro';
 
+const base = import.meta.env.BASE_URL;
 const allProjects = await getCollection('projects');
 const featuredProjects = allProjects.filter(p => p.data.featured);
 const otherProjects = allProjects.filter(p => !p.data.featured);
+
+// Separate Metatron for flagship hero (if it's the sole featured project)
+const metatron = featuredProjects.find(p => p.id === 'metatron-automata');
+const otherFeatured = featuredProjects.filter(p => p.id !== 'metatron-automata');
 ---
 
 <BaseLayout
@@ -19,18 +24,68 @@ const otherProjects = allProjects.filter(p => !p.data.featured);
 
   <main class="projects-page">
     <div class="container">
-      <header class="projects-header">
+      <header class="projects-header" data-reveal>
         <h1 class="page-title">Projects</h1>
         <p class="page-subtitle">
           Trading systems, blockchain products, and AI automation engineering
         </p>
       </header>
 
-      {featuredProjects.length > 0 && (
+      <!-- Metatron Automata flagship hero -->
+      {metatron && (
+        <section class="flagship-section" data-reveal>
+          <div class="flagship-label">Flagship Project</div>
+          <div class="flagship-card">
+            <!-- Decorative grid lines -->
+            <div class="flagship-grid-lines" aria-hidden="true">
+              <span></span><span></span><span></span><span></span>
+            </div>
+
+            <div class="flagship-body">
+              <div class="flagship-left">
+                <div class="flagship-status">
+                  <span class="status-dot"></span>
+                  Active · Building since 2021
+                </div>
+                <h2 class="flagship-title">{metatron.data.title}</h2>
+                <p class="flagship-description">{metatron.data.description}</p>
+                {metatron.data.tags && (
+                  <div class="flagship-tags">
+                    {metatron.data.tags.map((tag: string) => (
+                      <span class="tag">{tag}</span>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              <div class="flagship-right">
+                <a href={`${base}projects/${metatron.id}`} class="btn btn-primary">
+                  Read Case Study
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                    <polyline points="12 5 19 12 12 19"></polyline>
+                  </svg>
+                </a>
+                {metatron.data.github && (
+                  <a href={metatron.data.github} target="_blank" rel="noopener noreferrer" class="btn btn-secondary">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+                    </svg>
+                    GitHub
+                  </a>
+                )}
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
+      <!-- Other featured projects (future-proofed) -->
+      {otherFeatured.length > 0 && (
         <section class="featured-section">
-          <h2 class="section-title">Featured Projects</h2>
-          <div class="projects-grid featured-grid">
-            {featuredProjects.map((project) => (
+          <h2 class="section-title">Featured</h2>
+          <div class="projects-grid featured-grid" data-reveal>
+            {otherFeatured.map((project) => (
               <ProjectCard
                 title={project.data.title}
                 description={project.data.description}
@@ -49,7 +104,7 @@ const otherProjects = allProjects.filter(p => !p.data.featured);
       {otherProjects.length > 0 && (
         <section class="other-projects">
           <h2 class="section-title">Other Projects</h2>
-          <div class="projects-grid">
+          <div class="projects-grid" data-reveal>
             {otherProjects.map((project) => (
               <ProjectCard
                 title={project.data.title}
@@ -99,6 +154,206 @@ const otherProjects = allProjects.filter(p => !p.data.featured);
     margin: 0 auto;
   }
 
+  /* Flagship hero */
+  .flagship-section {
+    margin-bottom: 4rem;
+  }
+
+  .flagship-label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-primary);
+    margin-bottom: 0.75rem;
+    padding-left: 0.25rem;
+  }
+
+  .flagship-card {
+    position: relative;
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border: 1px solid rgba(79, 101, 245, 0.2);
+    border-radius: 1.25rem;
+    padding: 2.5rem;
+    box-shadow: var(--glass-shadow), 0 0 0 1px rgba(79, 101, 245, 0.08) inset;
+    overflow: hidden;
+    transition: border-color 0.25s ease, box-shadow 0.25s ease;
+  }
+
+  .flagship-card:hover {
+    border-color: rgba(79, 101, 245, 0.35);
+    box-shadow: var(--glass-shadow-hover);
+  }
+
+  /* Decorative geometric grid lines */
+  .flagship-grid-lines {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+    border-radius: 1.25rem;
+  }
+
+  .flagship-grid-lines span {
+    position: absolute;
+    background: rgba(79, 101, 245, 0.06);
+  }
+
+  .flagship-grid-lines span:nth-child(1) {
+    width: 1px;
+    height: 100%;
+    right: 30%;
+    top: 0;
+  }
+
+  .flagship-grid-lines span:nth-child(2) {
+    width: 1px;
+    height: 100%;
+    right: 15%;
+    top: 0;
+    opacity: 0.5;
+  }
+
+  .flagship-grid-lines span:nth-child(3) {
+    height: 1px;
+    width: 100%;
+    left: 0;
+    top: 35%;
+    opacity: 0.6;
+  }
+
+  .flagship-grid-lines span:nth-child(4) {
+    height: 1px;
+    width: 100%;
+    left: 0;
+    top: 65%;
+    opacity: 0.3;
+  }
+
+  .flagship-body {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 3rem;
+    align-items: center;
+    position: relative;
+    z-index: 1;
+  }
+
+  .flagship-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.78rem;
+    color: var(--color-text-dim);
+    margin-bottom: 1rem;
+    letter-spacing: 0.04em;
+  }
+
+  .status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #4ade80;
+    box-shadow: 0 0 6px rgba(74, 222, 128, 0.6);
+    animation: pulse-dot 2s ease-in-out infinite;
+    flex-shrink: 0;
+  }
+
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.4); }
+  }
+
+  .flagship-title {
+    font-family: var(--font-heading);
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    font-weight: 700;
+    color: var(--color-text);
+    margin-bottom: 0.875rem;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+
+  .flagship-description {
+    font-size: 1rem;
+    color: var(--color-text-dim);
+    line-height: 1.7;
+    margin-bottom: 1.5rem;
+    max-width: 580px;
+  }
+
+  .flagship-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .tag {
+    padding: 0.25rem 0.625rem;
+    background: var(--color-surface-primary);
+    border: 1px solid var(--color-border);
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    color: var(--color-text-dim);
+  }
+
+  .flagship-right {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    min-width: 160px;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    font-family: var(--font-body);
+    border-radius: 0.5rem;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+  }
+
+  .btn-primary {
+    background: var(--color-primary);
+    color: white;
+    border: none;
+    box-shadow: 0 4px 14px rgba(79, 101, 245, 0.18);
+  }
+
+  .btn-primary:hover {
+    background: var(--color-primary-dark);
+    box-shadow: 0 6px 20px rgba(79, 101, 245, 0.28);
+  }
+
+  .btn-primary svg {
+    transition: transform 0.2s ease;
+  }
+
+  .btn-primary:hover svg {
+    transform: translateX(3px);
+  }
+
+  .btn-secondary {
+    background: var(--glass-bg);
+    color: var(--color-text);
+    border: 1px solid var(--glass-border);
+  }
+
+  .btn-secondary:hover {
+    background: var(--glass-bg-hover);
+    border-color: var(--glass-border-hover);
+  }
+
+  /* Other sections */
   .featured-section,
   .other-projects {
     margin-bottom: 4rem;
@@ -106,10 +361,12 @@ const otherProjects = allProjects.filter(p => !p.data.featured);
 
   .section-title {
     font-family: var(--font-heading);
-    font-size: 1.5rem;
+    font-size: 1.1rem;
     font-weight: 600;
     margin-bottom: 1.5rem;
-    color: var(--color-primary);
+    color: var(--color-text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
   }
 
   .projects-grid {
@@ -122,9 +379,29 @@ const otherProjects = allProjects.filter(p => !p.data.featured);
     grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
   }
 
+  @media (max-width: 900px) {
+    .flagship-body {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+
+    .flagship-right {
+      flex-direction: row;
+      min-width: auto;
+    }
+  }
+
   @media (max-width: 768px) {
     .projects-page {
       padding-top: calc(var(--nav-height) + 1rem);
+    }
+
+    .flagship-card {
+      padding: 1.75rem;
+    }
+
+    .flagship-right {
+      flex-direction: column;
     }
 
     .projects-grid,

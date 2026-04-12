@@ -1,0 +1,323 @@
+---
+const base = import.meta.env.BASE_URL;
+
+const pages = [
+  { label: 'Home', path: base, hint: '/' },
+  { label: 'Projects', path: `${base}projects`, hint: '/projects' },
+  { label: 'Blog', path: `${base}blog`, hint: '/blog' },
+  { label: 'About', path: `${base}about`, hint: '/about' },
+];
+---
+
+<div class="cmd-overlay" id="cmd-overlay" role="dialog" aria-modal="true" aria-label="Command palette" hidden>
+  <div class="cmd-backdrop" id="cmd-backdrop"></div>
+  <div class="cmd-panel">
+    <div class="cmd-search-row">
+      <svg class="cmd-search-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="11" cy="11" r="8"></circle>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+      </svg>
+      <input
+        id="cmd-input"
+        class="cmd-input"
+        type="text"
+        placeholder="Navigate to..."
+        autocomplete="off"
+        spellcheck="false"
+      />
+      <kbd class="cmd-esc-hint">esc</kbd>
+    </div>
+
+    <ul class="cmd-list" id="cmd-list" role="listbox">
+      {pages.map((page, i) => (
+        <li
+          class="cmd-item"
+          role="option"
+          data-path={page.path}
+          data-label={page.label.toLowerCase()}
+          data-idx={i}
+        >
+          <span class="cmd-item-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+              <polyline points="9 22 9 12 15 12 15 22"></polyline>
+            </svg>
+          </span>
+          <span class="cmd-item-label">{page.label}</span>
+          <span class="cmd-item-hint">{page.hint}</span>
+        </li>
+      ))}
+    </ul>
+
+    <div class="cmd-footer">
+      <span class="cmd-hint"><kbd>↑</kbd><kbd>↓</kbd> navigate</span>
+      <span class="cmd-hint"><kbd>↵</kbd> go</span>
+      <span class="cmd-hint"><kbd>esc</kbd> close</span>
+    </div>
+  </div>
+</div>
+
+<style>
+  .cmd-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 15vh;
+  }
+
+  .cmd-overlay[hidden] {
+    display: none;
+  }
+
+  .cmd-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+  }
+
+  .cmd-panel {
+    position: relative;
+    width: 100%;
+    max-width: 520px;
+    margin: 0 1rem;
+    background: rgba(12, 12, 21, 0.92);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 1rem;
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(79, 101, 245, 0.12);
+    overflow: hidden;
+    animation: cmdSlideIn 0.15s ease-out;
+  }
+
+  @keyframes cmdSlideIn {
+    from { opacity: 0; transform: translateY(-8px) scale(0.98); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  .cmd-search-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  }
+
+  .cmd-search-icon {
+    color: var(--color-text-dim);
+    flex-shrink: 0;
+  }
+
+  .cmd-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    color: var(--color-text);
+    caret-color: var(--color-primary);
+  }
+
+  .cmd-input::placeholder {
+    color: var(--color-text-dim);
+  }
+
+  .cmd-esc-hint {
+    font-size: 0.7rem;
+    color: var(--color-text-dim);
+    padding: 0.1rem 0.4rem;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0.25rem;
+    font-family: var(--font-body);
+  }
+
+  .cmd-list {
+    list-style: none;
+    padding: 0.5rem;
+    margin: 0;
+    max-height: 280px;
+    overflow-y: auto;
+  }
+
+  .cmd-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.625rem 0.875rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: background 0.1s ease;
+  }
+
+  .cmd-item:hover,
+  .cmd-item[aria-selected="true"] {
+    background: rgba(79, 101, 245, 0.12);
+  }
+
+  .cmd-item[aria-selected="true"] .cmd-item-label {
+    color: var(--color-primary);
+  }
+
+  .cmd-item-icon {
+    color: var(--color-text-dim);
+    flex-shrink: 0;
+    width: 18px;
+    display: flex;
+    align-items: center;
+  }
+
+  .cmd-item-label {
+    flex: 1;
+    font-size: 0.9rem;
+    color: var(--color-text);
+    font-weight: 500;
+  }
+
+  .cmd-item-hint {
+    font-size: 0.75rem;
+    color: var(--color-text-dim);
+    font-family: monospace;
+  }
+
+  .cmd-item.hidden {
+    display: none;
+  }
+
+  .cmd-footer {
+    display: flex;
+    gap: 1.25rem;
+    padding: 0.625rem 1.25rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.07);
+    background: rgba(0, 0, 0, 0.2);
+  }
+
+  .cmd-hint {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.72rem;
+    color: var(--color-text-dim);
+  }
+
+  .cmd-hint kbd {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.1rem 0.35rem;
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 0.25rem;
+    font-size: 0.7rem;
+    font-family: var(--font-body);
+    line-height: 1.4;
+  }
+</style>
+
+<script>
+  function initCommandPalette() {
+    const overlay = document.getElementById('cmd-overlay');
+    const backdrop = document.getElementById('cmd-backdrop');
+    const input = document.getElementById('cmd-input') as HTMLInputElement | null;
+    const list = document.getElementById('cmd-list');
+
+    if (!overlay || !input || !list) return;
+
+    const items = Array.from(list.querySelectorAll<HTMLElement>('.cmd-item'));
+    let activeIdx = 0;
+
+    function open() {
+      overlay!.hidden = false;
+      input!.value = '';
+      filterItems('');
+      setActive(0);
+      requestAnimationFrame(() => input!.focus());
+    }
+
+    function close() {
+      overlay!.hidden = true;
+      input!.value = '';
+    }
+
+    function filterItems(query: string) {
+      const q = query.toLowerCase().trim();
+      let firstVisible = -1;
+      items.forEach((item, i) => {
+        const label = item.dataset.label ?? '';
+        const matches = !q || label.includes(q);
+        item.classList.toggle('hidden', !matches);
+        if (matches && firstVisible === -1) firstVisible = i;
+      });
+      setActive(firstVisible >= 0 ? firstVisible : 0);
+    }
+
+    function setActive(idx: number) {
+      const visible = items.filter(el => !el.classList.contains('hidden'));
+      if (visible.length === 0) return;
+      const clamped = Math.max(0, Math.min(idx, visible.length - 1));
+      items.forEach(el => el.removeAttribute('aria-selected'));
+      const target = visible[clamped];
+      if (target) {
+        target.setAttribute('aria-selected', 'true');
+        target.scrollIntoView({ block: 'nearest' });
+      }
+      activeIdx = clamped;
+    }
+
+    function navigate() {
+      const visible = items.filter(el => !el.classList.contains('hidden'));
+      const target = visible[activeIdx];
+      if (target?.dataset.path) {
+        window.location.href = target.dataset.path;
+        close();
+      }
+    }
+
+    // Cmd+K / Ctrl+K
+    document.addEventListener('keydown', (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        overlay!.hidden ? open() : close();
+        return;
+      }
+      if (overlay!.hidden) return;
+      if (e.key === 'Escape') { close(); return; }
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        const visible = items.filter(el => !el.classList.contains('hidden'));
+        setActive(Math.min(activeIdx + 1, visible.length - 1));
+      }
+      if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        setActive(Math.max(activeIdx - 1, 0));
+      }
+      if (e.key === 'Enter') { navigate(); }
+    });
+
+    input.addEventListener('input', () => {
+      filterItems(input.value);
+    });
+
+    backdrop?.addEventListener('click', close);
+
+    items.forEach((item) => {
+      item.addEventListener('click', () => {
+        if (item.dataset.path) window.location.href = item.dataset.path;
+        close();
+      });
+      item.addEventListener('mouseenter', () => {
+        const visible = items.filter(el => !el.classList.contains('hidden'));
+        const idx = visible.indexOf(item);
+        if (idx >= 0) setActive(idx);
+      });
+    });
+  }
+
+  document.addEventListener('astro:page-load', initCommandPalette);
+</script>

@@ -1,6 +1,6 @@
 ---
 title: "Metatron Automata"
-description: "An AI-first agentic automated trading platform running across crypto, forex, equities, and perpetuals — with modular signal processing, strategy execution, and real-time P&L."
+description: "An agentic automated trading platform running across crypto, forex, equities, and perpetuals — with modular signal processing, strategy execution, and real-time P&L."
 tags:
   [
     "AI Agents",

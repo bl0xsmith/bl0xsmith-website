@@ -4,6 +4,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import ThreeBackground from '../../components/ThreeBackground.astro';
 import Navigation from '../../components/Navigation.astro';
 import BlogCard from '../../components/BlogCard.astro';
+import { readingTime } from '../../utils/readingTime';
 
 const allBlogPosts = await getCollection('blog');
 const sortedPosts = allBlogPosts.sort((a, b) =>
@@ -27,7 +28,7 @@ const sortedPosts = allBlogPosts.sort((a, b) =>
         </p>
       </header>
 
-      <div class="blog-grid">
+      <div class="blog-grid" data-reveal>
         {sortedPosts.map((post) => (
           <BlogCard
             title={post.data.title}
@@ -35,6 +36,7 @@ const sortedPosts = allBlogPosts.sort((a, b) =>
             pubDate={post.data.pubDate}
             slug={post.id}
             tags={post.data.tags}
+            readingTime={readingTime(post.body ?? '')}
           />
         ))}
       </div>
