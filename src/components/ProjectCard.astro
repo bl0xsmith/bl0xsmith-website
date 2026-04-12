@@ -108,21 +108,25 @@ const projectUrl = slug ? `${base}projects/${slug}` : undefined;
 <style>
   .project-card {
     position: relative;
-    background: var(--color-bg-card);
-    border: 1px solid var(--color-border);
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
     border-radius: 1rem;
     padding: 1.5rem;
-    transition: all 0.2s ease;
+    transition: all 0.25s ease;
     cursor: pointer;
   }
 
   .project-card.featured {
-    border-color: var(--color-accent-purple);
+    border-color: rgba(79, 101, 245, 0.25);
   }
 
   .project-card:hover {
-    border-color: var(--color-primary);
-    box-shadow: 0 8px 30px var(--color-glow-primary);
+    background: var(--glass-bg-hover);
+    border-color: var(--glass-border-hover);
+    box-shadow: var(--glass-shadow-hover);
   }
 
   .card-inner-link {
@@ -138,13 +142,14 @@ const projectUrl = slug ? `${base}projects/${slug}` : undefined;
   .featured-badge {
     display: inline-block;
     padding: 0.25rem 0.75rem;
-    background: linear-gradient(135deg, var(--color-primary), var(--color-accent-purple));
+    background: rgba(79, 101, 245, 0.18);
+    border: 1px solid rgba(79, 101, 245, 0.35);
     border-radius: 0.25rem;
     font-size: 0.7rem;
     font-weight: 600;
-    color: white;
+    color: var(--color-primary);
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.08em;
     margin-bottom: 1rem;
   }
 
@@ -224,18 +229,18 @@ const projectUrl = slug ? `${base}projects/${slug}` : undefined;
   }
 
   .project-link:hover {
-    color: var(--color-accent-cyan);
+    color: var(--color-text);
   }
 
   .read-more {
     margin-left: auto;
     font-size: 0.875rem;
     font-weight: 500;
-    color: var(--color-accent-purple);
+    color: var(--color-text-dim);
     transition: color 0.2s ease;
   }
 
   .project-card:hover .read-more {
-    color: var(--color-accent-pink);
+    color: var(--color-primary);
   }
 </style>

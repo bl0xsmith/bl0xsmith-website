@@ -55,7 +55,7 @@
           for (const sz of [-1, 1])
             nodes.push(new THREE.Vector3(sx * d, sy * d, sz * d));
 
-    // Sacred gold lines — all 300 pairs
+    // Structure lines — dark steel blue
     const lineVerts: number[] = [];
     for (let i = 0; i < nodes.length; i++)
       for (let j = i + 1; j < nodes.length; j++) {
@@ -65,7 +65,7 @@
     const lineGeo = new THREE.BufferGeometry();
     lineGeo.setAttribute('position', new THREE.Float32BufferAttribute(lineVerts, 3));
     const lineMat = new THREE.LineBasicMaterial({
-      color: 0xd4a843,
+      color: 0x2a3a5e,
       transparent: true,
       opacity: 0.22,
       blending: THREE.AdditiveBlending,
@@ -96,8 +96,8 @@
         const sphere = new THREE.Mesh(
           new THREE.SphereGeometry(sphereR, 32, 32),
           new THREE.MeshStandardMaterial({
-            color: 0x1a0030,
-            emissive: 0xf0ddff,   // near-white violet — maximum brightness
+            color: 0x050d1a,
+            emissive: 0xdde8ff,   // cool white-blue stellar core
             emissiveIntensity: 4.5,
             roughness: 0.0,
             metalness: 0.0,
@@ -107,13 +107,13 @@
         spheres.push(sphere);
         soul = sphere;
 
-        // 5-layer additive corona — fakes bloom, goes from bright inner to vast diffuse halo
+        // 5-layer additive corona — cool blue-white, no violet
         const coronas = [
-          { r: sphereR * 1.4, color: 0xffffff, opacity: 0.30 }, // bright inner halo
-          { r: sphereR * 2.2, color: 0xcc77ff, opacity: 0.20 }, // violet aureole
-          { r: sphereR * 3.8, color: 0x9922ee, opacity: 0.12 }, // deep violet
-          { r: sphereR * 6.5, color: 0x6600bb, opacity: 0.07 }, // wide indigo wash
-          { r: sphereR * 11.0, color: 0x330055, opacity: 0.03 }, // vast outer aura
+          { r: sphereR * 1.4, color: 0xffffff, opacity: 0.25 }, // bright inner halo
+          { r: sphereR * 2.2, color: 0x3a6aaa, opacity: 0.15 }, // cool blue aureole
+          { r: sphereR * 3.8, color: 0x1a3a6e, opacity: 0.09 }, // deep navy
+          { r: sphereR * 6.5, color: 0x0d1e3a, opacity: 0.05 }, // wide dark wash
+          { r: sphereR * 11.0, color: 0x060e1e, opacity: 0.02 }, // vast outer aura
         ];
         for (const c of coronas) {
           const glow = new THREE.Mesh(
@@ -131,15 +131,15 @@
         }
 
         // Two point lights: tight bright core + wide ambient soul radiance
-        const soulLightCore = new THREE.PointLight(0xffeeff, 18, S * 3.5);
+        const soulLightCore = new THREE.PointLight(0xddeeff, 14, S * 3.5);
         nodeGroup.add(soulLightCore);
-        const soulLightAura = new THREE.PointLight(0x9922ff, 8, S * 7.0);
+        const soulLightAura = new THREE.PointLight(0x2244aa, 5, S * 7.0);
         nodeGroup.add(soulLightAura);
 
-        // Bright violet geodesic grid
+        // Steel-blue geodesic grid
         const grid = new THREE.Mesh(
           new THREE.IcosahedronGeometry(sphereR * 1.3, 1),
-          new THREE.MeshBasicMaterial({ color: 0xee88ff, wireframe: true, transparent: true, opacity: 0.80 })
+          new THREE.MeshBasicMaterial({ color: 0x3a5599, wireframe: true, transparent: true, opacity: 0.55 })
         );
         nodeGroup.add(grid);
         grids.push(grid);
@@ -157,8 +157,8 @@
         nodeGroup.add(sphere);
         spheres.push(sphere);
 
-        const gridColor = shell === 1 ? 0x8b3dff : 0x4433aa;
-        const gridOpacity = shell === 1 ? 0.45 : 0.30;
+        const gridColor = shell === 1 ? 0x2a4080 : 0x1a2850;
+        const gridOpacity = shell === 1 ? 0.30 : 0.18;
         const grid = new THREE.Mesh(
           new THREE.IcosahedronGeometry(sphereR * 1.28, 1),
           new THREE.MeshBasicMaterial({ color: gridColor, wireframe: true, transparent: true, opacity: gridOpacity })
@@ -199,15 +199,15 @@
     renderer.setPixelRatio(window.devicePixelRatio);
     camera.position.z = 30;
 
-    // Scene lighting — gives MeshStandardMaterial spheres real depth and shading
-    scene.add(new THREE.AmbientLight(0x111133, 1.2));
-    const light1 = new THREE.PointLight(0x8b3dff, 6, 120); // galaxy violet
+    // Scene lighting — cool blue-navy palette, no warm tones
+    scene.add(new THREE.AmbientLight(0x080d1a, 1.2));
+    const light1 = new THREE.PointLight(0x2244aa, 5, 120); // deep cool blue
     light1.position.set(20, 25, 15);
     scene.add(light1);
-    const light2 = new THREE.PointLight(0xd4a843, 4, 120); // sacred gold
+    const light2 = new THREE.PointLight(0x0d1830, 3, 120); // near-black navy
     light2.position.set(-25, -15, 10);
     scene.add(light2);
-    const light3 = new THREE.PointLight(0x6d6aff, 3, 80);  // cosmic indigo fill
+    const light3 = new THREE.PointLight(0x1a2a55, 2, 80);  // dark navy fill
     light3.position.set(0, -20, -10);
     scene.add(light3);
 
@@ -220,13 +220,14 @@
       posArray[i]     = (Math.random() - 0.5) * 120;
       posArray[i + 1] = (Math.random() - 0.5) * 120;
       posArray[i + 2] = (Math.random() - 0.5) * 120;
+      // Cool blue-gray particles — no gold, no violet
       const t = Math.random();
-      if (t < 0.33) {
-        colorArray[i] = 0.545; colorArray[i+1] = 0.239; colorArray[i+2] = 1.0;
-      } else if (t < 0.66) {
-        colorArray[i] = 0.831; colorArray[i+1] = 0.659; colorArray[i+2] = 0.263;
+      if (t < 0.40) {
+        colorArray[i] = 0.227; colorArray[i+1] = 0.314; colorArray[i+2] = 0.502; // 0x3a5080 steel blue
+      } else if (t < 0.70) {
+        colorArray[i] = 0.165; colorArray[i+1] = 0.227; colorArray[i+2] = 0.376; // 0x2a3a60 dark navy
       } else {
-        colorArray[i] = 0.427; colorArray[i+1] = 0.416; colorArray[i+2] = 1.0;
+        colorArray[i] = 0.267; colorArray[i+1] = 0.400; colorArray[i+2] = 0.667; // 0x4466aa slate blue
       }
     }
     particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
@@ -263,8 +264,8 @@
     particlesMesh.rotation.y = time * 0.05;
     particlesMesh.rotation.x = Math.sin(time * 0.3) * 0.04;
 
-    // Gold lines breathe slowly
-    const breathLine = 0.15 + Math.sin(time * 0.8) * 0.08;
+    // Structure lines breathe slowly
+    const breathLine = 0.12 + Math.sin(time * 0.8) * 0.06;
 
     planets.forEach(p => {
       p.lineMat.opacity = breathLine;

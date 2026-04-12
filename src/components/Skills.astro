@@ -153,22 +153,21 @@
   }
 
   .skill-category {
-    background: var(--color-bg-card);
-    border: 1px solid var(--color-border);
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
     border-radius: 1rem;
     padding: 1.5rem;
-    transition: all 0.2s ease;
+    transition: all 0.25s ease;
     cursor: pointer;
   }
 
   .skill-category:hover {
-    border-color: var(--color-primary);
-    box-shadow: 0 8px 30px var(--color-glow-primary);
-  }
-
-  .learning-category:hover {
-    border-color: var(--color-accent-purple);
-    box-shadow: 0 8px 30px var(--color-glow-violet);
+    background: var(--glass-bg-hover);
+    border-color: var(--glass-border-hover);
+    box-shadow: var(--glass-shadow-hover);
   }
 
   .category-header {
@@ -190,8 +189,8 @@
   }
 
   .category-icon.learning {
-    background: var(--color-surface-violet);
-    color: var(--color-accent-purple);
+    background: var(--color-surface-primary);
+    color: var(--color-primary);
   }
 
   .category-title {
@@ -223,13 +222,13 @@
   }
 
   .skill-tag.learning {
-    background: var(--color-surface-violet);
-    border-color: var(--color-border-violet);
+    background: var(--color-surface-primary-subtle);
+    border-color: var(--color-border-violet-subtle);
   }
 
   .skill-tag.learning:hover {
-    border-color: var(--color-accent-purple);
-    color: var(--color-accent-purple);
+    border-color: var(--color-primary);
+    color: var(--color-primary);
   }
 
   @media (max-width: 768px) {
