@@ -1,9 +1,10 @@
 ---
-title: "Perpetuals Trading Platform"
-description: "A full perps trading product — market/limit orders, TP/SL, margin/leverage, real-time P&L and liquidation. Became the #1 company-wide revenue driver within 4 months of launch."
+title: "Perps Trading Platform"
+description: "A full perpetuals trading product — market/limit orders, TP/SL, margin/leverage, real-time P&L and liquidation. Became the #1 company-wide revenue driver within 4 months of launch."
 tags:
   [
     "Perps",
+    "Perpetuals",
     "DeFi",
     "TypeScript",
     "React Native",
@@ -14,7 +15,7 @@ tags:
 featured: true
 ---
 
-A perpetuals trading product I built as a primary engineer on an advanced trading team. Launched across a mobile app and browser extension, it became the #1 revenue driver across the entire company within approximately four months of release.
+A perpetuals trading product I built as a senior engineer on an advanced trading team. Launched across a mobile app and browser extension, it became the #1 revenue driver across the entire company within approximately four months of release.
 
 ## What I Built
 
@@ -24,12 +25,12 @@ A perpetuals trading product I built as a primary engineer on an advanced tradin
 
 **Execution & Reconciliation** — Order management system that handles the full lifecycle: submission, confirmation, partial fills, cancellations, and settlement. Reconciliation runs continuously to ensure client state matches chain state.
 
-**Cross-Client Architecture** — The same trading infrastructure powers both mobile (React Native) and browser extension (React). Shared business logic, client-specific rendering.
+**Cross-Client Architecture** — The same trading infrastructure now powers both mobile (React Native) and browser extension (React). Shared business logic, client-specific rendering.
 
 ## Impact
 
 - #1 company-wide revenue driver within ~4 months of launch
-- Built and shipped the complete perps trading flow from zero
+- Senior member of small team that built and shipped the complete perps trading flow from zero
 - Real-time P&L, price feeds, and reconciliation running across mobile and extension
 
 ## Stack

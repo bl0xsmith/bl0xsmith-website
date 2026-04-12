@@ -1,15 +1,15 @@
 ---
 title: "DeFi Earn & ETH Staking"
-description: "DeFi yield and ETH staking products — $175M+ TVL in the first month and 146K+ ETH staked since launch."
+description: "DeFi yield and ETH staking products — $175M+ TVL and 146K+ ETH staked in the first month."
 tags: ["DeFi", "Ethereum", "Staking", "TypeScript", "React Native"]
-featured: false
+featured: true
 ---
 
-Two DeFi products I shipped as part of an advanced trading team, running alongside a perpetuals trading launch.
+Two DeFi products I shipped as part of a staking team.
 
 ## DeFi Earn
 
-A yield product that lets users deposit assets into DeFi protocols directly from their wallet. Drove **$175M+ TVL**, hitting 73% of the annual target in a single month from launch.
+I led the launch of a yield product integrating with Aave that lets users deposit assets into DeFi protocols directly from their wallet. Drove **$175M+ TVL**, hitting 73% of the annual target in a single month from launch.
 
 The engineering work involved:
 
