@@ -85,7 +85,7 @@ const {
         }
       }
 
-      /* Custom cursor */
+      /* Custom cursor — do not transition left/top; position must track instantly */
       .cursor-follower {
         width: 20px;
         height: 20px;
@@ -94,7 +94,11 @@ const {
         position: fixed;
         pointer-events: none;
         z-index: 9999;
-        transition: all 0.1s ease;
+        transition:
+          width 0.1s ease,
+          height 0.1s ease,
+          background-color 0.1s ease,
+          opacity 0.12s ease;
         transform: translate(-50%, -50%);
       }
 
@@ -130,29 +134,80 @@ const {
       }
       document.addEventListener('astro:page-load', initReveal);
 
-      // Custom cursor
-      const cursor = document.querySelector('.cursor-follower') as HTMLElement;
+      // Custom cursor: instant position, hide when pointer leaves window, re-bind hovers on nav
+      let cursorCoreBound = false;
+      let hoverAbort: AbortController | null = null;
 
-      document.addEventListener('mousemove', (e) => {
-        cursor.style.left = e.clientX + 'px';
-        cursor.style.top = e.clientY + 'px';
-      });
+      function getCursorEl(): HTMLElement | null {
+        return document.querySelector('.cursor-follower');
+      }
 
-      // Cursor expand on hover
-      const interactiveElements = document.querySelectorAll('a, button, .card');
-      interactiveElements.forEach(el => {
-        el.addEventListener('mouseenter', () => {
-          cursor.style.width = '36px';
-          cursor.style.height = '36px';
-          cursor.style.backgroundColor = 'rgba(79, 101, 245, 0.1)';
+      function onCursorMouseMove(e: MouseEvent) {
+        const cursor = getCursorEl();
+        if (!cursor) return;
+        cursor.style.left = `${e.clientX}px`;
+        cursor.style.top = `${e.clientY}px`;
+        cursor.style.opacity = '1';
+      }
+
+      function onCursorDocumentMouseOut(e: MouseEvent) {
+        if (e.relatedTarget) return;
+        const cursor = getCursorEl();
+        if (cursor) cursor.style.opacity = '0';
+      }
+
+      function onCursorDocumentMouseOver(e: MouseEvent) {
+        if (e.relatedTarget !== null) return;
+        const cursor = getCursorEl();
+        if (cursor) cursor.style.opacity = '1';
+      }
+
+      function onCursorVisibilityChange() {
+        if (document.visibilityState !== 'visible') return;
+        const cursor = getCursorEl();
+        if (cursor) cursor.style.opacity = '1';
+      }
+
+      function initCursor() {
+        const cursor = getCursorEl();
+        if (!cursor) return;
+
+        if (!cursorCoreBound) {
+          cursorCoreBound = true;
+          document.addEventListener('mousemove', onCursorMouseMove);
+          document.addEventListener('mouseout', onCursorDocumentMouseOut);
+          document.addEventListener('mouseover', onCursorDocumentMouseOver);
+          document.addEventListener('visibilitychange', onCursorVisibilityChange);
+        }
+
+        hoverAbort?.abort();
+        hoverAbort = new AbortController();
+        const { signal } = hoverAbort;
+
+        document.querySelectorAll('a, button, .card').forEach((el) => {
+          el.addEventListener(
+            'mouseenter',
+            () => {
+              cursor.style.width = '36px';
+              cursor.style.height = '36px';
+              cursor.style.backgroundColor = 'rgba(79, 101, 245, 0.1)';
+            },
+            { signal }
+          );
+          el.addEventListener(
+            'mouseleave',
+            () => {
+              cursor.style.width = '20px';
+              cursor.style.height = '20px';
+              cursor.style.backgroundColor = 'transparent';
+            },
+            { signal }
+          );
         });
+      }
 
-        el.addEventListener('mouseleave', () => {
-          cursor.style.width = '20px';
-          cursor.style.height = '20px';
-          cursor.style.backgroundColor = 'transparent';
-        });
-      });
+      document.addEventListener('astro:page-load', initCursor);
+      initCursor();
     </script>
   </body>
 </html>
